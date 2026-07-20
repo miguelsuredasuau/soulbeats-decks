@@ -1,0 +1,235 @@
+/* storyform2.css — el tray del test (chrome de plataforma, NO contenido del deck)
+ * + la PIEL MÓVIL del deck (media query ≤700px: los gates corren a 1080×1920 y no
+ * la ven jamás — el artefacto gateado no cambia; la mano sí).
+ * Tipo de la casa: Montserrat (head/body del tema) + Kalam (mano). */
+
+.sf2-tray {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: min(560px, 100vw);
+  max-height: 52vh;
+  box-sizing: border-box;
+  padding: 12px 16px calc(14px + env(safe-area-inset-bottom, 0px));
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: linear-gradient(180deg, rgba(7, 17, 27, 0) 0%, rgba(7, 17, 27, .9) 22%, rgba(7, 17, 27, .97) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-family: 'Montserrat', -apple-system, Arial, sans-serif;
+}
+
+.sf2-head {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(233, 242, 248, .62);
+  padding-left: 2px;
+}
+.sf2-head .n {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(46, 196, 182, .18);
+  color: #2EC4B6;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+
+.sf2-chips { display: flex; flex-direction: column; gap: 8px; }
+
+.sf2-chip {
+  appearance: none;
+  text-align: left;
+  font: 600 16px/1.3 'Montserrat', -apple-system, Arial, sans-serif;
+  color: #e9f2f8;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .04));
+  border: 1.5px solid rgba(255, 255, 255, .16);
+  border-radius: 16px;
+  padding: 13px 16px;
+  min-height: 48px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
+  transition: transform .1s ease, background .12s ease, border-color .12s ease, opacity .2s ease, box-shadow .12s ease;
+}
+.sf2-chip:hover { background: rgba(46, 196, 182, .12); border-color: rgba(46, 196, 182, .5); }
+.sf2-chip:active {
+  transform: scale(.975);
+  background: rgba(46, 196, 182, .18);
+  border-color: #2EC4B6;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .3);
+}
+.sf2-chip.is-picked {
+  background: rgba(46, 196, 182, .22);
+  border-color: #2EC4B6;
+  color: #eafffb;
+  box-shadow: 0 0 22px rgba(46, 196, 182, .35);
+}
+.sf2-chip.is-dim { opacity: .3; }
+
+.sf2-cta {
+  appearance: none;
+  font: 800 17px/1 'Montserrat', -apple-system, Arial, sans-serif;
+  letter-spacing: .01em;
+  color: #06231f;
+  background: linear-gradient(180deg, #3adbcc, #2EC4B6);
+  border: 0;
+  border-radius: 999px;
+  padding: 15px 26px;
+  min-height: 50px;
+  cursor: pointer;
+  align-self: center;
+  transition: transform .1s ease, box-shadow .12s ease;
+  box-shadow: 0 8px 26px rgba(46, 196, 182, .4);
+}
+.sf2-cta:hover { transform: translateY(-1px); }
+.sf2-cta:active { transform: scale(.96); box-shadow: 0 3px 10px rgba(46, 196, 182, .35); }
+
+.sf2-share { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.sf2-btn {
+  appearance: none;
+  font: 700 14px/1 'Montserrat', -apple-system, Arial, sans-serif;
+  color: #e9f2f8;
+  background: rgba(255, 255, 255, .08);
+  border: 1.5px solid rgba(255, 255, 255, .2);
+  border-radius: 999px;
+  padding: 13px 20px;
+  min-height: 48px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
+  transition: transform .1s ease, border-color .12s ease, color .12s ease;
+}
+.sf2-btn:hover { border-color: #2EC4B6; color: #2EC4B6; }
+.sf2-btn:active { transform: scale(.95); }
+
+.sf2-alt {
+  appearance: none;
+  background: none;
+  border: 0;
+  color: rgba(233, 242, 248, .5);
+  font: 600 13px/1 'Montserrat', -apple-system, Arial, sans-serif;
+  text-decoration: underline dotted;
+  cursor: pointer;
+  align-self: center;
+  padding: 8px;
+  min-height: 32px;
+}
+.sf2-alt:hover { color: #2EC4B6; }
+
+.sf2-free { display: none; }
+.sf2-free.is-open { display: block; }
+.sf2-input {
+  width: 100%;
+  box-sizing: border-box;
+  font: 600 16px/1.3 'Montserrat', -apple-system, Arial, sans-serif;
+  color: #e9f2f8;
+  background: rgba(255, 255, 255, .06);
+  border: 1.5px solid rgba(255, 255, 255, .2);
+  border-radius: 14px;
+  padding: 13px 16px;
+  min-height: 48px;
+  outline: none;
+}
+.sf2-input:focus { border-color: #2EC4B6; }
+.sf2-input.is-shake { animation: sf2shake .4s ease; border-color: #e4572e; }
+@keyframes sf2shake {
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(2px); }
+}
+
+.sf2-note {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: rgba(233, 242, 248, .55);
+  text-align: center;
+}
+
+/* la reaction beat: el narrador acusa recibo — 1 línea, no bloquea */
+.sf2-toast {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: -12px;
+  transform: translateY(-100%) scale(.98);
+  opacity: 0;
+  pointer-events: none;
+  font: 600 16px/1.4 'Kalam', 'Montserrat', cursive;
+  color: #0b1520;
+  background: #f7f3e8;
+  border-radius: 14px;
+  padding: 10px 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .4);
+  transition: opacity .22s ease, transform .22s ease;
+}
+.sf2-toast.is-on { opacity: 1; transform: translateY(-100%) scale(1); }
+.sf2-toast.is-warn { background: #ffe9df; color: #7a2e12; }
+
+.sf2-tray.is-thinking .sf2-input { opacity: .5; pointer-events: none; }
+
+/* =========================================================================
+ * PIEL MÓVIL del deck — solo viewports de mano (≤700px). Los gates (validate/
+ * deck_lab/score) corren a 1080×1920: NUNCA entran aquí. Coordenadas en px de
+ * CANVAS (Reveal escala el lienzo entero).
+ * ========================================================================= */
+@media (max-width: 700px) {
+  /* FUERA el letterbox: el lienzo arranca en y=0 (Reveal lo centra con inset 50% +
+   * translate -50% inline; el !important de hoja gana al inline). La escala viva
+   * la mantiene el widget en --sf2-scale (Reveal.getScale()). */
+  .reveal .slides {
+    inset: 0 auto auto 50% !important;
+    transform: translate(-50%, 0) scale(var(--sf2-scale, .36)) !important;
+    transform-origin: 50% 0 !important;   /* el origen arriba: sin esto el scale re-centra el lienzo */
+  }
+
+  /* menos banda muerta arriba: chrome del marco sube */
+  .reveal .gd-miles { top: 130px !important; }
+  .reveal .gd-eyebrow { top: 232px !important; font-size: 24px !important; }
+
+  /* la pregunta LLENA (Typeform): el tipo de la questioncard sube de 40 → 58 */
+  .reveal .gd-qcard h2 { font-size: 58px !important; line-height: 1.1 !important; }
+  .reveal .gd-qcard .stakes { font-size: 30px !important; }
+  .reveal .gd-qcard .gd-pill { font-size: 20px !important; }
+
+  /* subheads de las preguntas free (inline 32px → 40px) */
+  section[data-slide="2"] .gd-fb-subhead,
+  section[data-slide="4"] .gd-fb-subhead,
+  section[data-slide="6"] .gd-fb-subhead { font-size: 40px !important; }
+
+  /* cover: el subtítulo respira */
+  section[data-slide="0"] .gd-fb-subhead { font-size: 36px !important; }
+
+  /* diagnóstico (fases 8/10/12/14/16/18): veredicto + tells + salto legibles */
+  section[data-slide="8"] .gd-fb-body, section[data-slide="10"] .gd-fb-body,
+  section[data-slide="12"] .gd-fb-body, section[data-slide="14"] .gd-fb-body,
+  section[data-slide="16"] .gd-fb-body, section[data-slide="18"] .gd-fb-body {
+    font-size: 30px !important;
+  }
+
+  /* póster: la pieza compartible se lee en mano */
+  section[data-slide="21"] [data-id^="sf-rung-"] .gd-fb-body:first-child { font-size: 22px !important; }
+  section[data-slide="21"] [data-id^="sf-rung-"] .gd-fb-body:last-child { font-size: 15px !important; }
+  section[data-slide="21"] [data-id="sf-kicker"] { font-size: 25px !important; }
+  section[data-slide="21"] [data-id="sf-fase-num"] { font-size: 50px !important; }
+  section[data-slide="21"] [data-id="sf-motto"] { font-size: 24px !important; }
+  section[data-slide="21"] [data-id="sf-forma"] { font-size: 20px !important; }
+  section[data-slide="21"] [data-id="sf-salto"] { font-size: 31px !important; }
+  section[data-slide="21"] [data-id="sf-receipt"] { font-size: 18px !important; }
+  section[data-slide="21"] [data-id="sf-wink"] { font-size: 21px !important; }
+  section[data-slide="21"] [data-id="sf-brand"] { font-size: 16px !important; }
+
+  /* tray a sangre y COMPACTO en mano: la banda de chips no puede comerse al narrador */
+  .sf2-tray { width: 100vw; padding: 8px 12px calc(10px + env(safe-area-inset-bottom, 0px)); gap: 6px; }
+  .sf2-chips { gap: 6px; }
+  .sf2-chip { font-size: 15px; padding: 11px 14px; min-height: 46px; border-radius: 14px; }
+  .sf2-head { font-size: 10px; letter-spacing: .08em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sf2-alt { font-size: 12px; padding: 5px; min-height: 26px; }
+  .sf2-cta { font-size: 16px; padding: 13px 24px; min-height: 48px; }
+}

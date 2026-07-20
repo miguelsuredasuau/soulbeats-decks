@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reel · La ontología como puente · Soulbeats</title>
+<link rel="icon" href="../favicon.svg">
+<style>
+  :root{ --navy:#0A1A29; --navy2:#0f2233; --teal:#2EC4B6; --coral:#E5735E; --ink:#eaf2f7; --dim:#8fa8b8; }
+  *{ box-sizing:border-box; margin:0; padding:0 }
+  html,body{ height:100%; background:var(--navy); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; -webkit-font-smoothing:antialiased }
+  body{ min-height:100dvh; display:flex; flex-direction:column;
+    background:
+      radial-gradient(900px 460px at 82% -10%, rgba(46,196,182,.16), transparent 60%),
+      radial-gradient(680px 380px at 4% 110%, rgba(229,115,94,.12), transparent 60%),
+      var(--navy); }
+  header{ display:flex; align-items:center; gap:12px; padding:16px clamp(16px,4vw,32px);
+    padding-top:max(16px,env(safe-area-inset-top)); }
+  .back{ color:var(--dim); text-decoration:none; font-weight:700; font-size:14px; display:inline-flex; align-items:center; gap:8px;
+    border:1px solid rgba(255,255,255,.12); border-radius:999px; padding:8px 14px; transition:border-color .15s, color .15s }
+  .back:hover{ color:var(--teal); border-color:rgba(46,196,182,.5) }
+  .eyebrow{ margin-left:auto; color:var(--teal); font-weight:800; letter-spacing:.16em; text-transform:uppercase; font-size:11.5px }
+  main{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; padding:8px clamp(12px,4vw,32px) 28px }
+  .stage{ position:relative; width:100%; max-width:min(430px, 46vh); aspect-ratio:9/16;
+    border-radius:20px; overflow:hidden; background:#04101b;
+    border:1px solid rgba(255,255,255,.10); box-shadow:0 30px 80px rgba(0,0,0,.55) }
+  video{ width:100%; height:100%; object-fit:contain; display:block; background:#04101b }
+  .cap{ text-align:center; color:var(--dim); font-size:13px; line-height:1.5; max-width:44ch }
+  .cap b{ color:var(--ink) }
+</style>
+</head>
+<body>
+  <header>
+    <a class="back" href="../">← Volver</a>
+    <span class="eyebrow">Soulbeats · reel</span>
+  </header>
+  <main>
+    <div class="stage">
+      <video controls playsinline preload="metadata" poster="../assets/cover-reel.png">
+        <source src="./ontologia-puente.mp4" type="video/mp4">
+        Tu navegador no reproduce este vídeo. <a href="./ontologia-puente.mp4">Descárgalo aquí</a>.
+      </video>
+    </div>
+    <p class="cap"><b>La ontología como puente</b> — la historia en formato reel, con intro y cierre. Toca para reproducir; gira el móvil o pon pantalla completa para verlo a lo grande.</p>
+  </main>
+</body>
+</html>

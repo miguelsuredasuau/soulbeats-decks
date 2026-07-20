@@ -1250,6 +1250,227 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;o
 @media (prefers-reduced-motion: reduce){
   .fd-cyclediagram--spin .seg path{animation:none;stroke-dasharray:none;}
 }
+/* ============================================================================
+   kind:"circuit" — el racetrack horizontal con write-back. TODO scopeado bajo
+   .fd-cyclediagram--circuit (child classes propias: station/badge/track/tok… — no
+   pisan ni las pisa el ciclo radial). El leg viaja en --wbl-fwd (acción) /
+   --wbl-back (señal): identidad por DATO. CERO z-index: el orden del DOM apila.
+   ============================================================================ */
+.fd-cyclediagram--circuit{font-family:var(--body);--wbl-fwd:var(--bad);--wbl-back:var(--accent);}
+.fd-cyclediagram--circuit .track{position:absolute;left:0;top:0;display:block;overflow:visible;}
+/* riel de IDA (acción): coral atenuado, fino y calmo — el flujo secundario */
+.fd-cyclediagram--circuit .fwd{color:color-mix(in srgb,var(--wbl-fwd) 60%,transparent);}
+.fd-cyclediagram--circuit .fwd .rail{fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;}
+.fd-cyclediagram--circuit .fwd .ah{fill:currentColor;}
+/* tubería de VUELTA (write-back): teal SÓLIDO, gruesa, con glow — el HÉROE del circuito */
+.fd-cyclediagram--circuit .back{color:var(--wbl-back);}
+.fd-cyclediagram--circuit .back .pipe{fill:none;stroke:currentColor;stroke-width:5;
+  stroke-linecap:round;stroke-linejoin:round;
+  filter:drop-shadow(0 0 8px color-mix(in srgb,var(--wbl-back) 45%,transparent));}
+.fd-cyclediagram--circuit .back .ah{fill:currentColor;
+  filter:drop-shadow(0 0 5px color-mix(in srgb,var(--wbl-back) 50%,transparent));}
+/* los TOKENS: pucks que ruedan por la path (offset-path). La firma ambiente del circuito */
+.fd-cyclediagram--circuit .tok{position:absolute;left:0;top:0;border-radius:50%;
+  offset-anchor:50% 50%;offset-rotate:0deg;offset-distance:0%;
+  animation-name:fd-cyc-run;animation-timing-function:linear;animation-iteration-count:infinite;}
+.fd-cyclediagram--circuit .tok.fwd{width:9px;height:9px;background:var(--wbl-fwd);
+  box-shadow:0 0 8px 1px color-mix(in srgb,var(--wbl-fwd) 70%,transparent);}
+.fd-cyclediagram--circuit .tok.back{width:11px;height:11px;background:var(--wbl-back);
+  box-shadow:0 0 11px 2px color-mix(in srgb,var(--wbl-back) 78%,transparent),0 0 3px #fff;}
+@keyframes fd-cyc-run{from{offset-distance:0%;}to{offset-distance:100%;}}
+/* la estación: OBJETO de cristal con masa (cara con luz radial, bisel, doble sombra) */
+.fd-cyclediagram--circuit .station{position:absolute;box-sizing:border-box;display:flex;
+  align-items:center;gap:11px;padding:0 15px;border-radius:14px;
+  background:radial-gradient(120% 130% at 24% 18%,rgba(255,255,255,.16),rgba(255,255,255,0) 55%),
+    linear-gradient(180deg,color-mix(in srgb,#fff 8%,var(--bg)),color-mix(in srgb,#000 18%,var(--bg)));
+  border:1px solid var(--card-bd);
+  box-shadow:0 5px 0 color-mix(in srgb,#000 44%,var(--bg)),
+    0 10px 20px rgba(0,0,0,.32),0 20px 38px rgba(0,0,0,.30),
+    inset 0 1px 0 rgba(255,255,255,.20),inset 0 -3px 8px rgba(0,0,0,.26);}
+.fd-cyclediagram--circuit .station .badge{flex:none;width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1;
+  background:radial-gradient(120% 120% at 30% 22%,rgba(255,255,255,.18),rgba(255,255,255,0) 55%),
+    color-mix(in srgb,#000 20%,var(--bg));border:1px solid var(--card-bd);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 2px 5px rgba(0,0,0,.3);}
+.fd-cyclediagram--circuit .station .txt{display:flex;flex-direction:column;flex:1;min-width:0;}
+.fd-cyclediagram--circuit .station .slbl{font-family:var(--body);font-weight:800;font-size:16px;
+  letter-spacing:.01em;color:var(--light);white-space:nowrap;line-height:1.12;
+  text-shadow:0 1px 2px rgba(0,0,0,.45);}
+.fd-cyclediagram--circuit .station .ssub{font-family:var(--body);font-weight:600;font-size:11.5px;
+  color:var(--dim);white-space:nowrap;line-height:1.2;margin-top:2px;}
+/* el HUB (transformador): teal sólido con aro + glow (el color sale del DATO accent) */
+.fd-cyclediagram--circuit .station.acc{border-color:color-mix(in srgb,var(--wbl-back) 60%,transparent);
+  background:radial-gradient(120% 130% at 24% 18%,rgba(255,255,255,.2),rgba(255,255,255,0) 55%),
+    linear-gradient(180deg,color-mix(in srgb,var(--wbl-back) 84%,#fff),
+      var(--wbl-back) 46%,color-mix(in srgb,var(--wbl-back) 78%,#000));
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--wbl-back) 34%,transparent),
+    0 5px 0 color-mix(in srgb,var(--wbl-back) 46%,#000),
+    0 12px 24px rgba(0,0,0,.32),0 0 30px color-mix(in srgb,var(--wbl-back) 30%,transparent),
+    inset 0 1px 0 rgba(255,255,255,.28);}
+.fd-cyclediagram--circuit .station.acc .badge{border-color:color-mix(in srgb,#fff 30%,transparent);
+  background:radial-gradient(120% 120% at 30% 22%,rgba(255,255,255,.24),rgba(255,255,255,0) 55%),
+    color-mix(in srgb,#000 14%,var(--wbl-back));}
+.fd-cyclediagram--circuit .station.acc .slbl{color:var(--accent-ink);text-shadow:none;}
+.fd-cyclediagram--circuit .station.acc .ssub{color:color-mix(in srgb,var(--accent-ink) 78%,transparent);}
+/* la marca que LATE en la fuente: aquí aterriza el write-back (record⇄action) */
+.fd-cyclediagram--circuit .cmark{position:absolute;width:14px;height:14px;border-radius:50%;
+  transform:translate(-50%,-50%);background:var(--wbl-back);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--wbl-back) 30%,transparent),0 2px 6px rgba(0,0,0,.4);}
+.fd-cyclediagram--circuit .cmark::after{content:"";position:absolute;inset:-5px;border-radius:inherit;
+  pointer-events:none;box-shadow:0 0 0 2px color-mix(in srgb,var(--wbl-back) 60%,transparent);
+  animation:fd-cyc-cpulse 2.6s cubic-bezier(.4,0,.2,1) infinite;}
+@keyframes fd-cyc-cpulse{0%{transform:scale(1);opacity:.85;}62%,100%{transform:scale(2);opacity:0;}}
+/* rótulo de IDA: pastilla fantasma coral (leg secundaria, calma) */
+.fd-cyclediagram--circuit .flabel{position:absolute;transform:translate(-50%,-50%);white-space:nowrap;
+  display:inline-flex;align-items:center;gap:6px;padding:3px 11px;border-radius:999px;
+  font-family:var(--body);font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase;
+  color:color-mix(in srgb,var(--wbl-fwd) 90%,var(--light));
+  background:color-mix(in srgb,var(--bg) 82%,transparent);
+  box-shadow:0 1px 4px rgba(0,0,0,.35),inset 0 0 0 1px color-mix(in srgb,var(--wbl-fwd) 30%,transparent);}
+.fd-cyclediagram--circuit .flabel .dir{font-weight:900;}
+/* rótulo WRITE-BACK: pastilla teal sólida con glow — el HÉROE (leg dominante) */
+.fd-cyclediagram--circuit .blabel{position:absolute;transform:translate(-50%,-50%);white-space:nowrap;
+  display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:999px;
+  font-family:var(--body);font-weight:800;font-size:15px;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--accent-ink);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--wbl-back) 90%,#fff),var(--wbl-back));
+  box-shadow:0 6px 16px rgba(0,0,0,.3),0 0 22px color-mix(in srgb,var(--wbl-back) 34%,transparent),
+    inset 0 1px 0 rgba(255,255,255,.3);}
+.fd-cyclediagram--circuit .blabel .dir{font-weight:900;font-size:17px;}
+/* el ensamblado por beats: estaciones entran (pop), riel de ida entra, y el WRITE-BACK se
+   DIBUJA (draw-in del trazo) en el último beat — «acción → señal de vuelta», causa-efecto */
+.fd-cyclediagram--circuit .station.fragment{opacity:0;transform:translateY(8px) scale(.96);}
+.fd-cyclediagram--circuit .station.fragment.visible{opacity:1;transform:none;
+  transition:opacity .3s ease,transform .4s cubic-bezier(.3,1.5,.5,1);}
+.fd-cyclediagram--circuit .fwd.fragment,.fd-cyclediagram--circuit .tok.fragment,
+.fd-cyclediagram--circuit .flabel.fragment,.fd-cyclediagram--circuit .cmark.fragment{opacity:0;}
+.fd-cyclediagram--circuit .fwd.fragment.visible,.fd-cyclediagram--circuit .tok.fragment.visible,
+.fd-cyclediagram--circuit .flabel.fragment.visible{opacity:1;transition:opacity .35s ease;}
+.fd-cyclediagram--circuit .cmark.fragment.visible{opacity:1;transition:opacity .3s ease .5s;}
+.fd-cyclediagram--circuit .back.fragment .pipe{stroke-dasharray:100;stroke-dashoffset:100;}
+.fd-cyclediagram--circuit .back.fragment.visible .pipe{stroke-dashoffset:0;
+  transition:stroke-dashoffset .6s ease;}
+.fd-cyclediagram--circuit .back.fragment .ah{opacity:0;}
+.fd-cyclediagram--circuit .back.fragment.visible .ah{opacity:1;transition:opacity .25s ease .45s;}
+.fd-cyclediagram--circuit .blabel.fragment{opacity:0;transform:translate(-50%,-50%) translateY(6px);}
+.fd-cyclediagram--circuit .blabel.fragment.visible{opacity:1;transform:translate(-50%,-50%);
+  transition:opacity .35s ease .3s,transform .35s ease .3s;}
+/* step_per:none — el MISMO ensamblado en cascada CSS, UN reloj, sin beats */
+.fd-cyclediagram--circuit.sp-none .station{opacity:0;
+  animation:fd-cyc-cpop .4s cubic-bezier(.3,1.5,.5,1) calc(var(--i,0)*.1s) both;}
+.fd-cyclediagram--circuit.sp-none .back .pipe{stroke-dasharray:100;stroke-dashoffset:100;
+  animation:fd-cyc-cdraw .6s ease .5s forwards;}
+.fd-cyclediagram--circuit.sp-none .back .ah{opacity:0;animation:fd-cyc-cfade .25s ease 1s forwards;}
+@keyframes fd-cyc-cpop{to{opacity:1;}}
+@keyframes fd-cyc-cdraw{to{stroke-dashoffset:0;}}
+@keyframes fd-cyc-cfade{to{opacity:1;}}
+/* spin_hint:"none" — el circuito entero dibujado pero los tokens aparcados (sin circulación) */
+.fd-cyclediagram--circuit.no-flow .tok{animation:none;offset-distance:0%;}
+.fd-cyclediagram--circuit.no-flow .tok.back{opacity:0;}
+.fd-cyclediagram--circuit.no-flow .cmark::after{animation:none;opacity:0;}
+/* reduced-motion: circuito ENTERO dibujado, token aparcado en la fuente, cero flujo */
+@media (prefers-reduced-motion: reduce){
+  .fd-cyclediagram--circuit .tok{animation:none;offset-distance:0%;}
+  .fd-cyclediagram--circuit .tok.back{opacity:0;}
+  .fd-cyclediagram--circuit .cmark::after{animation:none;opacity:0;}
+  .fd-cyclediagram--circuit .station{transition:none;animation:none;}
+  .fd-cyclediagram--circuit.sp-none .station{opacity:1;animation:none;}
+  .fd-cyclediagram--circuit .back .pipe{stroke-dasharray:none;stroke-dashoffset:0;animation:none;}
+  .fd-cyclediagram--circuit .back.fragment .pipe{stroke-dashoffset:0;}
+  .fd-cyclediagram--circuit .back .ah{opacity:1;animation:none;}
+}
+
+/* ---- foundry: langselect (core/components/foundry/langselect.ts) ---- */
+.fd-langselect{position:absolute;box-sizing:border-box;display:flex;align-items:flex-start;
+  gap:calc(var(--co)*.42);--co:46px;}
+.fd-langselect .chip{position:relative;display:flex;flex-direction:column;align-items:center;
+  gap:calc(var(--co)*.16);text-decoration:none;--lift:0px;
+  animation:fd-langsel-in .5s cubic-bezier(.2,.9,.3,1.15) calc(var(--i,0)*.07s) both;}
+/* el envoltorio NO recortado: lleva la sombra doble (contacto + ambiente) y el aro activo */
+.fd-langselect .coinwrap{position:relative;width:var(--co);height:var(--co);border-radius:50%;
+  transform:translateY(var(--lift));
+  transition:transform .28s cubic-bezier(.2,.9,.3,1.15),box-shadow .28s ease,filter .28s ease;
+  box-shadow:0 calc(var(--co)*.05) calc(var(--co)*.12) rgba(0,0,0,.42),
+    0 calc(var(--co)*.015) calc(var(--co)*.04) rgba(0,0,0,.4);}
+/* aro teal + halo de la ACTIVA — bajo la moneda (::before), asoma por el canto; late al beat */
+.fd-langselect .coinwrap::before{content:"";position:absolute;inset:calc(var(--co)*-.09);
+  border-radius:50%;border:2px solid transparent;pointer-events:none;}
+.fd-langselect .chip.is-active{--lift:calc(var(--co)*-.15);}
+.fd-langselect .chip.is-active .coinwrap{
+  box-shadow:0 calc(var(--co)*.11) calc(var(--co)*.2) rgba(0,0,0,.46),
+    0 calc(var(--co)*.02) calc(var(--co)*.05) rgba(0,0,0,.4),
+    0 0 calc(var(--co)*.34) color-mix(in srgb,var(--accent) 34%,transparent);}
+.fd-langselect .chip.is-active .coinwrap::before{
+  border-color:color-mix(in srgb,var(--accent) 72%,transparent);
+  animation:fd-langsel-pulse 2.6s ease-in-out infinite;}
+/* la moneda: disco recortado que aloja el arte + gloss + brillo + rim (bisel) */
+.fd-langselect .coin{position:absolute;inset:0;border-radius:50%;overflow:hidden;
+  background:var(--bg);}
+.fd-langselect .coin .art{position:absolute;inset:0;width:100%;height:100%;display:block;}
+/* gloss cenital: un realce de luz arriba-izquierda (screen) — el barniz de la moneda */
+.fd-langselect .coin .gloss{position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  mix-blend-mode:screen;opacity:.9;
+  background:radial-gradient(120% 92% at 30% 16%,rgba(255,255,255,.55),
+    rgba(255,255,255,.12) 32%,transparent 56%);}
+/* brillo que BARRE la cara (glint), en bucle escalonado por --i (ambiente, no beat) */
+.fd-langselect .coin .sheen{position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.5) 50%,transparent 60%);
+  background-size:250% 250%;background-repeat:no-repeat;background-position:150% 0;
+  animation:fd-langsel-sheen 5.5s ease-in-out calc(var(--i,0)*.5s) infinite;}
+/* rim = bisel + canto: filo de luz + realce interior arriba / sombra interior abajo (relieve) */
+.fd-langselect .coin .rim{position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--light) 55%,transparent),
+    inset 0 calc(var(--co)*.04) calc(var(--co)*.06) rgba(255,255,255,.28),
+    inset 0 calc(var(--co)*-.05) calc(var(--co)*.08) rgba(0,0,0,.42);}
+/* el CÓDIGO (la bandera ≠ idioma: siempre emparejada con el código correcto) */
+.fd-langselect .code{font-family:var(--body);font-weight:800;font-size:calc(var(--co)*.3);
+  letter-spacing:.08em;text-transform:uppercase;line-height:1;color:var(--light);
+  text-shadow:0 1px 2px rgba(0,0,0,.55);transition:color .25s ease;}
+.fd-langselect .chip.is-active .code{color:var(--accent);}
+/* reposo: las inactivas ceden foco (atenuadas); hover levanta y las despierta */
+.fd-langselect .chip:not(.is-active) .coin{filter:saturate(.9) brightness(.9);}
+.fd-langselect .chip:not(.is-active) .code{color:var(--dim);}
+.fd-langselect .chip:hover .coinwrap{transform:translateY(calc(var(--lift) - 3px));
+  box-shadow:0 calc(var(--co)*.13) calc(var(--co)*.24) rgba(0,0,0,.48),
+    0 calc(var(--co)*.02) calc(var(--co)*.05) rgba(0,0,0,.4);}
+.fd-langselect .chip:hover .coin{filter:none;}
+.fd-langselect .chip:focus-visible{outline:none;}
+.fd-langselect .chip:focus-visible .coinwrap::before{
+  border-color:color-mix(in srgb,var(--accent) 72%,transparent);}
+/* ── variante PILL: cápsula horizontal (bandera + código) con fondo translúcido ── */
+.fd-langselect.sh-pill{gap:calc(var(--co)*.26);align-items:center;}
+.fd-langselect.sh-pill .chip{flex-direction:row;gap:calc(var(--co)*.28);align-items:center;
+  padding:calc(var(--co)*.14) calc(var(--co)*.36) calc(var(--co)*.14) calc(var(--co)*.14);
+  background:var(--card-bg);border:1px solid var(--card-bd);border-radius:var(--pill);
+  box-shadow:0 calc(var(--co)*.13) calc(var(--co)*.3) rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.1);}
+.fd-langselect.sh-pill .chip{--lift:0px;}
+.fd-langselect.sh-pill .code{font-size:calc(var(--co)*.34);}
+.fd-langselect.sh-pill .chip.is-active{
+  background:color-mix(in srgb,var(--accent) 16%,var(--card-bg));
+  border-color:color-mix(in srgb,var(--accent) 55%,transparent);
+  box-shadow:0 calc(var(--co)*.13) calc(var(--co)*.32) rgba(0,0,0,.3),
+    0 0 calc(var(--co)*.3) color-mix(in srgb,var(--accent) 30%,transparent),
+    inset 0 1px 0 rgba(255,255,255,.12);}
+.fd-langselect.sh-pill .chip:hover{transform:translateY(-2px);}
+/* ── EL RELOJ ── */
+@keyframes fd-langsel-in{from{opacity:0;transform:translateY(10px) scale(.86);}
+  to{opacity:1;transform:none;}}
+@keyframes fd-langsel-sheen{0%{background-position:150% 0;}
+  24%,100%{background-position:-80% 0;}}
+@keyframes fd-langsel-pulse{
+  0%,100%{box-shadow:0 0 calc(var(--co)*.3) color-mix(in srgb,var(--accent) 30%,transparent),
+    inset 0 0 calc(var(--co)*.14) color-mix(in srgb,var(--accent) 18%,transparent);}
+  50%{box-shadow:0 0 calc(var(--co)*.52) color-mix(in srgb,var(--accent) 52%,transparent),
+    inset 0 0 calc(var(--co)*.2) color-mix(in srgb,var(--accent) 28%,transparent);}}
+/* reduced-motion: estado FINAL digno — activa elevada con aro estático, sin barrido ni latido */
+@media (prefers-reduced-motion: reduce){
+  .fd-langselect .chip{animation:none;opacity:1;}
+  .fd-langselect .coinwrap{transition:none;}
+  .fd-langselect .coin .sheen{animation:none;background-position:150% 0;}
+  .fd-langselect .chip.is-active .coinwrap::before{animation:none;
+    box-shadow:0 0 calc(var(--co)*.34) color-mix(in srgb,var(--accent) 34%,transparent);}
+}
 
 /* ---- foundry: ontology (core/components/foundry/ontology.ts) ---- */
 .fd-ontology{position:absolute;box-sizing:border-box;}
