@@ -11,6 +11,8 @@
   --ink:#ffffff; --light:hsla(0,0%,100%,.95); --dim:hsla(0,0%,100%,.55); --line:hsla(0,0%,100%,.2);
   /* verdict — the two colours the paddles already speak in; a skin may retune them */
   --ok:#2FB673; --bad:#E5573E;
+  /* shout — el amarillo del bocadillo «gritar» (saybubble sb-shout); una piel puede retunearlo */
+  --shout:#FFE04A;
   /* type */
   --head:'Montserrat',-apple-system,Arial,sans-serif; --body:'Montserrat',-apple-system,Arial,sans-serif;
   --head-weight:800; --head-tracking:0;
@@ -140,15 +142,52 @@ html,body,.reveal-viewport,.reveal{background:var(--bg)!important;}
 .gd-cheat ul{font-size:26px;font-weight:600;line-height:1.6;margin:0;padding-left:1.2em;color:var(--light);}
 .gd-cheat .cta{margin-top:.8em;display:inline-block;background:var(--accent);color:var(--accent-ink);
   font-weight:800;font-size:24px;padding:14px 30px;border-radius:var(--pill);}
-.gd-poll{text-align:center;width:100%;} .gd-poll h2{font-family:var(--head);font-size:46px;font-weight:var(--head-weight);margin-bottom:.6em;color:var(--light);}
-.gd-poll .opts{display:flex;gap:24px;justify-content:center;}
-.gd-poll .opt{position:relative;background:var(--card-bg);border:2px solid var(--line);border-radius:var(--radius);padding:22px 40px;font-size:30px;font-weight:700;color:var(--light);}
-/* graded quiz: the right option lights up on its own beat; the ✓ rides the corner */
+.gd-poll{text-align:center;width:100%;} .gd-poll h2{font-family:var(--head);font-size:46px;font-weight:var(--head-weight);margin-bottom:.72em;color:var(--light);}
+/* tier-A option cards — chip + heading + sub-line, materiality by token (retro Miguel:
+   las cajas planas leían vacías). Row = 3 iguales a lo ancho; col = apiladas (portrait). */
+.gd-poll .opts{display:flex;gap:20px;justify-content:center;align-items:stretch;max-width:1180px;margin:0 auto;}
+.gd-poll .opts:not(.col) .opt{flex:1 1 0;min-width:0;}
+.gd-poll .opts.col{flex-direction:column;align-items:center;max-width:912px;gap:18px;}
+.gd-poll .opts.col .opt{width:100%;flex:0 0 auto;}
+.gd-poll .opt{position:relative;box-sizing:border-box;display:flex;align-items:center;gap:16px;text-align:left;
+  padding:20px 24px;border-radius:var(--radius);color:var(--light);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--light) 6%,transparent),transparent 46%),
+    color-mix(in srgb,var(--accent) 6%,var(--card-bg));
+  border:1px solid color-mix(in srgb,var(--accent) 30%,var(--card-bd));
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--light) 13%,transparent),
+    0 2px 5px rgba(0,0,0,.24),0 16px 34px rgba(0,0,0,.30);
+  transition:transform .18s cubic-bezier(.22,.7,.28,1),box-shadow .18s ease,border-color .18s ease;}
+/* left accent spine — the rung line */
+.gd-poll .opt::before{content:"";position:absolute;left:0;top:13px;bottom:13px;width:4px;border-radius:0 3px 3px 0;
+  background:var(--accent);opacity:.62;}
+.gd-poll .opt:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--accent) 60%,transparent);
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--light) 17%,transparent),
+    0 4px 10px rgba(0,0,0,.30),0 22px 46px rgba(0,0,0,.40),0 0 0 1px color-mix(in srgb,var(--accent) 28%,transparent);}
+/* number chip — the level marker; crisp, always legible */
+.gd-poll .opt .idx{flex:0 0 auto;width:40px;height:40px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--head);font-size:21px;font-weight:800;font-style:normal;line-height:1;color:var(--accent-ink);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--light) 24%,var(--accent)),var(--accent));
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--light) 32%,transparent),0 3px 8px color-mix(in srgb,var(--accent) 32%,transparent);}
+.gd-poll .opt .lbl{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.gd-poll .opt .lbl .t{font-size:26px;font-weight:800;line-height:1.12;color:var(--light);}
+.gd-poll .opt .lbl .s{font-size:17px;font-weight:700;letter-spacing:.01em;color:var(--dim);}
+/* ladder mode — "¿en qué nivel estás?": spine + tint + border ASCEND across the set so the
+   three cards read as rungs, not clones. Opinion polls leave it OFF (no false ranking). */
+.gd-poll .opts.ladder .opt{--lvl:calc((var(--i,0) + 1) / var(--n,1));
+  background:linear-gradient(180deg,color-mix(in srgb,var(--light) 6%,transparent),transparent 46%),
+    color-mix(in srgb,var(--accent) calc(3% + var(--lvl) * 11%),var(--card-bg));
+  border-color:color-mix(in srgb,var(--accent) calc(20% + var(--lvl) * 34%),var(--card-bd));}
+.gd-poll .opts.ladder .opt::before{opacity:calc(.26 + var(--lvl) * .64);}
 .gd-poll.quiz h2{font-size:42px;}
-.gd-poll .opt .ok{position:absolute;inset:-2px;border:2px solid var(--ok);border-radius:inherit;
-  background:color-mix(in srgb,var(--ok) 16%,transparent);pointer-events:none;}
+/* graded quiz: the right option lights up on its own beat; the ✓ rides the corner */
+.gd-poll .opt .ok{position:absolute;inset:-1px;border:2px solid var(--ok);border-radius:inherit;
+  background:color-mix(in srgb,var(--ok) 15%,transparent);pointer-events:none;
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--ok) 20%,transparent),0 18px 40px color-mix(in srgb,var(--ok) 22%,transparent);}
 .gd-poll .opt .ok::after{content:"✓";position:absolute;top:-15px;right:-13px;width:30px;height:30px;border-radius:50%;
-  background:var(--ok);color:#fff;font-size:17px;font-weight:800;font-style:normal;display:flex;align-items:center;justify-content:center;}
+  background:var(--ok);color:#fff;font-size:17px;font-weight:800;font-style:normal;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 12px color-mix(in srgb,var(--ok) 45%,transparent);}
+@media (prefers-reduced-motion:reduce){.gd-poll .opt{transition:none;}.gd-poll .opt:hover{transform:none;}}
 .gd-poll .hint{margin:.7em auto 0;max-width:760px;font-size:24px;font-weight:600;color:var(--accent);}
 .gd-poll .why{margin:.55em auto 0;max-width:840px;font-size:25px;font-weight:600;line-height:1.4;color:var(--light);
   background:var(--card-bg);border:var(--hair);border-left:3px solid var(--ok);border-radius:var(--radius);padding:18px 26px;}
@@ -418,6 +457,61 @@ html,body,.reveal-viewport,.reveal{background:var(--bg)!important;}
 .gd-hspeech.tail-r::after{bottom:auto;left:auto;right:-19px;top:50%;margin-top:-6px;transform:rotate(-138deg);} /* speaker to the RIGHT */
 .gd-hspeech.tail-d::after{left:50%;margin-left:-14px;transform:rotate(-6deg);}                        /* speaker straight BELOW */
 .gd-hspeech.tail-dr::after{bottom:-19px;left:auto;right:20px;transform:rotate(30deg);}                /* speaker DOWN-right */
+
+/* ═══ saybubble — el bocadillo 100× (monográfico radar §F) ══════════════════════════════
+   Bocadillo BLANCO hecho a mano (Kalam), radios orgánicos, sombra suave (LOCK: bubble-lab).
+   Clase raíz `gd-speechbubble` (contiene "speech" → el radar la exime por self-backed y la
+   reconoce como bocadillo acoplado). La cola es un <svg> HERMANO detrás (gd-say-tail). El
+   énfasis inline vive en spans gd-em-*. Reemplaza a gd-hspeech en la voz del narrador. */
+.gd-speechbubble{position:absolute;max-width:520px;--bub-bg:#fff;
+  background:var(--bub-bg);color:#12232e;font-family:var(--hand);font-weight:700;
+  font-size:30px;line-height:1.3;padding:16px 24px;
+  border-radius:26px 22px 28px 20px/22px 28px 20px 26px;
+  box-shadow:2px 6px 0 rgba(0,10,20,.16), 0 16px 34px rgba(0,10,20,.30);
+  z-index:calc(var(--layer-z) + 6);text-wrap:pretty;}
+.gd-speechbubble i,.gd-speechbubble em{font-style:italic;font-weight:700;}
+/* think — nube (radios más orgánicos, la estela de burbujitas la pone la cola) */
+.gd-speechbubble.sb-think{border-radius:52% 48% 54% 46%/48% 54% 46% 52%;padding:18px 26px;}
+/* shout — estallido amarillo, centrado, ligeramente rotado (system.html LOCK) */
+.gd-speechbubble.sb-shout{--bub-bg:var(--shout);color:#241f05;text-align:center;
+  border-radius:14px 20px 12px 22px/18px 12px 22px 14px;transform:rotate(-2deg);
+  box-shadow:2px 6px 0 rgba(60,44,0,.18), 0 16px 34px rgba(40,30,0,.28);}
+/* tint — bocadillo teñido del acento (retrocompat con speech_tint) */
+.gd-speechbubble.sb-tint{--bub-bg:color-mix(in srgb,var(--accent) 15%,#fff);}
+
+/* la cola — SVG detrás del bocadillo; la base queda oculta bajo el cuerpo blanco (sin
+   costura), la punta cae sobre la cabeza. El color sigue al del bocadillo (blanco / amarillo). */
+.gd-say-tail{position:absolute;overflow:visible;width:1px;height:1px;pointer-events:none;
+  z-index:calc(var(--layer-z) + 5);filter:drop-shadow(1px 3px 0 rgba(0,10,20,.14));}
+.gd-say-tail .fill{fill:#fff;}
+.gd-say-tail .stroke{fill:none;stroke:#fff;stroke-width:3;vector-effect:non-scaling-stroke;}
+.gd-say-tail.sb-shout .fill{fill:var(--shout);}
+.gd-say-tail.sb-shout .stroke{stroke:var(--shout);}
+
+/* ── la gramática de énfasis (spans inline, gd-em-*) — LOCK bubble-lab/system.html ──
+   apilables, se eligen por palabra. Colores por token (accent = teal · bad = coral) para
+   funcionar bajo las 6 pieles; el énfasis mantiene su carácter hecho a mano (rotaciones). */
+.gd-em-box{background:var(--bad);color:#fff;padding:1px 8px;border-radius:6px;
+  display:inline-block;transform:rotate(-2deg);box-shadow:2px 2px 0 rgba(0,0,0,.28);}
+.gd-em-mark{background:linear-gradient(120deg,color-mix(in srgb,var(--accent) 60%,#fff),var(--accent));
+  color:var(--accent-ink,#05231F);padding:0 6px;border-radius:4px;
+  -webkit-box-decoration-break:clone;box-decoration-break:clone;}
+.gd-em-under{position:relative;}
+.gd-em-under::after{content:"";position:absolute;left:-2px;right:-3px;bottom:-4px;height:5px;
+  border-radius:3px;background:var(--accent);transform:rotate(-1.2deg);}
+.gd-em-ring{position:relative;padding:0 6px;}
+.gd-em-ring::before{content:"";position:absolute;inset:-6px -4px;border:3px solid var(--bad);
+  border-radius:50%;transform:rotate(-6deg);}
+.gd-em-strike{position:relative;color:var(--dim);}
+.gd-em-strike::after{content:"";position:absolute;left:-2px;right:-2px;top:52%;height:3px;
+  background:var(--bad);transform:rotate(-4deg);}
+.gd-em-big{font-size:1.32em;color:var(--accent);vertical-align:-2px;display:inline-block;
+  transform:rotate(-2deg);font-weight:700;}
+.gd-em-teal{color:var(--accent);}
+.gd-em-coral{color:var(--bad);}
+.gd-em-stamp{color:var(--accent);border:2.5px solid var(--accent);border-radius:6px;
+  padding:0 7px;transform:rotate(-4deg);display:inline-block;letter-spacing:.02em;
+  text-transform:uppercase;font-size:.86em;}
 
 /* circular avatar — look GD: el personaje SALE del agujero (capa, no foto en círculo).
    .hole = el disco/anillo detrás · img.in = recorte circular (parte baja) ·
@@ -1114,6 +1208,21 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;o
   .gd-bgvideo video{display:none;}
   .gd-bgvideo .vposter{display:block;}
 }
+
+/* ---------- semi-fade-out — «actúa y LUEGO se atenúa» (#30) ------------------------
+   La intención del spotlight semi-fade-out es: la pieza APARECE nítida en su beat y
+   solo se atenúa cuando un beat POSTERIOR (una caption que nombra la lección) toma el
+   relevo. El nativo de reveal la muestra a opacidad plena DESDE que carga la slide y la
+   atenúa EN su propio índice, así que un post-it «en lugar de aparecer, se difuminaba»
+   (Miguel #30): nacía ya puesto y se lavaba justo al llegar a su beat. Cargamos aquí
+   (theme.css va DESPUÉS de reveal.css → gana el cascade) las TRES fases reales:
+     · antes de su beat  → oculto (no ha aparecido aún)
+     · EN su beat        → nítido (.current-fragment) — el momento en que APARECE
+     · beats posteriores → atenuado a .5 (.visible sin ser el actual) — se cede el foco
+   Sistémico: arregla TODO post-it/pieza con step "N:semi-fade-out" en cualquier deck. */
+.reveal .fragment.semi-fade-out{opacity:0;visibility:hidden;}
+.reveal .fragment.semi-fade-out.visible{opacity:.5;visibility:inherit;}
+.reveal .fragment.semi-fade-out.visible.current-fragment{opacity:1;}
 /* SKIN 1 — Anlak Editorial (chosen; deepest craft): navy/teal, serif authority,
    orb + dot-grid + inset plate, editorial microcomponents. */
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap');

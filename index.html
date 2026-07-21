@@ -114,12 +114,46 @@
     text-align:center; border-top:1px solid var(--line); padding-top:18px; line-height:1.6 }
   footer b{ color:var(--ink) }
 
+  /* ---- entradilla (brand sting) ---- */
+  .entradilla{ width:min(560px,86vw); border-radius:22px; overflow:hidden; background:#04101b;
+    border:1px solid var(--line); box-shadow:0 30px 90px rgba(0,0,0,.5), 0 0 40px rgba(46,196,182,.10);
+    margin-bottom:6px }
+  .intro{ display:block; width:100%; height:auto; aspect-ratio:16/9; object-fit:cover; background:#04101b }
+  .intro .mark{ width:60%; height:auto }
+  @media (prefers-reduced-motion:reduce){
+    .intro{ background:url(assets/brand-intro-poster.jpg) center/cover }
+  }
+
+  /* ---- resumen ---- */
+  .resumen{ max-width:880px; margin:0 auto clamp(30px,5vw,52px); text-align:center;
+    padding-bottom:clamp(28px,5vw,46px); border-bottom:1px solid var(--line) }
+  .rtitle{ font-size:clamp(24px,5vw,40px); line-height:1.05; font-weight:800; letter-spacing:-.015em }
+  .rtitle b{ color:var(--teal) }
+  .rlede{ color:var(--dim); font-size:clamp(14px,2.3vw,17px); margin:14px auto 0; max-width:62ch }
+  .rlede b{ color:var(--ink); font-weight:700 }
+  .rgrid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:clamp(20px,3.4vw,30px) auto 0; text-align:left }
+  .rcard{ display:block; text-decoration:none; color:var(--ink);
+    background:linear-gradient(180deg,rgba(15,34,51,.7),rgba(11,28,43,.7));
+    border:1px solid var(--line); border-radius:16px; padding:18px 20px;
+    transition:border-color .16s, transform .16s }
+  .rcard:hover{ transform:translateY(-2px); border-color:rgba(46,196,182,.45) }
+  .rnum{ color:var(--teal); font-weight:800; font-size:11px; letter-spacing:.14em }
+  .rcard b{ display:block; font-size:17px; margin:7px 0 6px; letter-spacing:-.01em }
+  .rdesc{ display:block; color:var(--dim); font-size:13.5px; line-height:1.5 }
+  .rdesc i{ color:var(--cream); font-style:italic }
+  .rmodes{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px 12px; margin-top:22px }
+  .rmodes span{ color:var(--dim); font-size:13px; font-weight:700;
+    background:rgba(255,255,255,.03); border:1px solid var(--line); border-radius:999px; padding:6px 14px }
+
   /* ---- responsive ---- */
   @media (max-width:720px){
     .stagewrap{ grid-template-columns:1fr; gap:18px }
     .info{ text-align:center }
     .meta,.langrow.show{ justify-content:center }
     .frame img{ max-height:46vh }
+  }
+  @media (max-width:560px){
+    .rgrid{ grid-template-columns:1fr }
   }
   @media (max-width:430px){
     .chooser{ grid-template-columns:repeat(2,1fr) }
@@ -131,13 +165,43 @@
 <body>
   <div class="wrap">
     <header class="masthead">
-      <img class="mark" src="assets/soulbeats-mark.svg" alt="Soulbeats" width="360" height="169">
+      <div class="entradilla">
+        <video class="intro" autoplay muted loop playsinline preload="metadata"
+               poster="assets/brand-intro-poster.jpg" aria-label="Soulbeats">
+          <source src="assets/brand-intro.mp4" type="video/mp4">
+          <img class="mark" src="assets/soulbeats-mark.svg" alt="Soulbeats">
+        </video>
+      </div>
       <h1 class="vh">Soulbeats</h1>
       <div class="tagline">story decks <b>con alma</b></div>
     </header>
 
+    <!-- ═══════════ RESUMEN · la entrada de todo ═══════════ -->
+    <section class="resumen">
+      <div class="eyebrow">El resumen</div>
+      <h2 class="rtitle">Dos historias. <b>Cuatro formas</b> de vivirlas.</h2>
+      <p class="rlede">Cada historia Soulbeats — narrador on-model, componentes y animación generados por el
+        sistema — se puede <b>leer</b> como deck, <b>pasar</b> en el móvil, <b>mirar</b> como reel o
+        <b>hacer</b> como test. Elige el formato; el alma es la misma.</p>
+      <div class="rgrid">
+        <a class="rcard" href="#historia-01">
+          <span class="rnum">HISTORIA · 01</span>
+          <b>La ontología como puente</b>
+          <span class="rdesc">Estrategia ↔ operación: del <i>system of record</i> al <i>system of action</i>. La palanca baja como acción, la señal sube como registro.</span>
+        </a>
+        <a class="rcard" href="#historia-02">
+          <span class="rnum">HISTORIA · 02</span>
+          <b>La escalera de la IA</b>
+          <span class="rdesc">Seis niveles, de «pregúntale» a «que el sistema se valide solo». Subir convierte la velocidad en infraestructura fiable.</span>
+        </a>
+      </div>
+      <div class="rmodes">
+        <span>🖥️ Deck · leer</span><span>📱 Móvil · swipe</span><span>🎬 Reel · mirar</span><span>🧪 Test · ¿qué fase?</span>
+      </div>
+    </section>
+
     <!-- ═══════════ HISTORIA 01 · la ontología como puente ═══════════ -->
-    <section class="story">
+    <section class="story" id="historia-01">
       <div class="hero">
         <div class="eyebrow">Historia · 01</div>
         <h2>La ontología como <b>puente</b>.</h2>
@@ -185,7 +249,7 @@
     </section>
 
     <!-- ═══════════ HISTORIA 02 · la escalera de la IA ═══════════ -->
-    <section class="story">
+    <section class="story" id="historia-02">
       <div class="hero">
         <div class="eyebrow">Historia · 02</div>
         <h2>¿En qué <b>nivel</b> usas la IA?</h2>
