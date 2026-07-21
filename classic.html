@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Soulbeats · story decks con alma</title>
+<meta name="description" content="Historias Soulbeats que puedes leer como deck, pasar en el móvil, mirar como reel o hacer como test — la ontología como puente y la escalera de la IA.">
+<link rel="icon" href="favicon.svg">
+<style>
+  :root{
+    --navy:#0A1A29; --navy2:#0f2233; --panel:#0d1f30; --teal:#2EC4B6; --coral:#E5735E;
+    --cream:#FCE9A6; --ink:#eaf2f7; --dim:#93aec0; --line:rgba(255,255,255,.09);
+  }
+  *{ box-sizing:border-box; margin:0; padding:0 }
+  html{ -webkit-text-size-adjust:100% }
+  body{
+    min-height:100dvh; color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+    padding:clamp(22px,5vw,54px) clamp(16px,5vw,54px) 64px;
+    padding-top:max(clamp(22px,5vw,54px),env(safe-area-inset-top));
+    background:
+      radial-gradient(1200px 560px at 84% -10%, rgba(46,196,182,.15), transparent 62%),
+      radial-gradient(820px 460px at 2% 112%, rgba(229,115,94,.12), transparent 60%),
+      var(--navy);
+  }
+  .wrap{ max-width:1080px; margin:0 auto }
+
+  /* ---- masthead ---- */
+  .masthead{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px; margin-bottom:clamp(26px,5vw,44px) }
+  .mark{ width:clamp(210px,46vw,360px); height:auto; display:block; filter:drop-shadow(0 6px 26px rgba(46,196,182,.18)) }
+  .tagline{ color:var(--dim); font-size:clamp(13px,2.3vw,15.5px); letter-spacing:.22em; text-transform:uppercase; font-weight:700 }
+  .tagline b{ color:var(--teal) }
+  .vh{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0) }
+
+  /* ---- story block ---- */
+  .story{ margin:0 auto clamp(30px,5vw,52px) }
+  .story + .story{ padding-top:clamp(28px,5vw,46px); border-top:1px solid var(--line) }
+
+  /* ---- hero copy ---- */
+  .hero{ text-align:center; max-width:64ch; margin:0 auto clamp(20px,3.4vw,32px) }
+  .eyebrow{ color:var(--teal); font-weight:800; letter-spacing:.18em; text-transform:uppercase; font-size:12px;
+    display:inline-flex; align-items:center; gap:9px; margin-bottom:12px }
+  .eyebrow::before,.eyebrow::after{ content:""; width:26px; height:2px; background:linear-gradient(90deg,transparent,var(--teal)); display:inline-block }
+  .eyebrow::after{ background:linear-gradient(90deg,var(--teal),transparent) }
+  .hero h2{ font-size:clamp(28px,6vw,50px); line-height:1.04; font-weight:800; letter-spacing:-.015em }
+  .hero h2 b{ color:var(--teal) }
+  .lede{ color:var(--dim); font-size:clamp(14.5px,2.4vw,18px); margin:14px auto 0; max-width:58ch }
+
+  /* ---- hub card ---- */
+  .hub{ background:linear-gradient(180deg, rgba(15,34,51,.92), rgba(11,28,43,.92));
+    border:1px solid var(--line); border-radius:22px; padding:clamp(14px,3vw,26px);
+    box-shadow:0 30px 80px rgba(0,0,0,.45) }
+
+  .chooser{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px }
+  .chooser.cols3{ grid-template-columns:repeat(3,1fr) }
+  .mode{ appearance:none; cursor:pointer; color:var(--ink); text-align:center;
+    background:rgba(255,255,255,.03); border:1.5px solid var(--line); border-radius:14px;
+    padding:13px 8px 11px; display:flex; flex-direction:column; align-items:center; gap:3px;
+    transition:border-color .16s, background .16s, transform .16s }
+  .mode:hover{ transform:translateY(-2px); border-color:rgba(46,196,182,.45) }
+  .mode .ic{ font-size:22px; line-height:1 }
+  .mode .lb{ font-weight:800; font-size:14px }
+  .mode .sub{ color:var(--dim); font-size:11px; font-weight:600 }
+  .mode.is-active{ background:rgba(46,196,182,.12); border-color:var(--teal);
+    box-shadow:0 0 0 1px rgba(46,196,182,.35), 0 10px 30px rgba(46,196,182,.10) }
+  .mode.is-active .sub{ color:var(--teal) }
+
+  /* ---- stage ---- */
+  .stagewrap{ display:grid; grid-template-columns:minmax(0,1.12fr) 1fr; gap:clamp(16px,3vw,30px);
+    align-items:center; margin-top:clamp(16px,3vw,24px) }
+  .framewrap{ display:flex; align-items:center; justify-content:center; min-height:0 }
+  .frame{ position:relative; display:inline-flex; padding:10px; border-radius:18px;
+    background:#04101b; border:1px solid rgba(255,255,255,.10); box-shadow:0 20px 54px rgba(0,0,0,.5);
+    transition:transform .18s; text-decoration:none }
+  a.frame:hover{ transform:translateY(-3px) }
+  .frame img{ display:block; max-width:100%; max-height:min(56vh,460px); width:auto; height:auto;
+    border-radius:10px; object-fit:contain; background:#04101b }
+  .badge{ position:absolute; top:16px; left:16px; background:rgba(4,16,27,.82); color:var(--teal);
+    border:1px solid rgba(46,196,182,.4); border-radius:999px; padding:4px 11px; font-size:11.5px; font-weight:800;
+    letter-spacing:.06em; backdrop-filter:blur(4px) }
+  .play{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none }
+  .play[hidden]{ display:none }
+  .play span{ width:66px; height:66px; border-radius:999px; background:rgba(46,196,182,.92);
+    display:flex; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(0,0,0,.5) }
+  .play span::after{ content:""; margin-left:5px; border-style:solid; border-width:13px 0 13px 22px;
+    border-color:transparent transparent transparent #04101b }
+
+  .info .kicker{ color:var(--teal); font-weight:800; letter-spacing:.12em; text-transform:uppercase; font-size:11.5px }
+  .info h3{ font-size:clamp(21px,3.4vw,28px); line-height:1.14; font-weight:800; margin:9px 0 8px; letter-spacing:-.01em }
+  .info p{ color:var(--dim); font-size:15px; line-height:1.55 }
+  .meta{ display:flex; flex-wrap:wrap; gap:8px; margin-top:14px }
+  .pill{ background:rgba(46,196,182,.12); color:var(--teal); border:1px solid rgba(46,196,182,.28);
+    border-radius:999px; padding:4px 11px; font-size:12px; font-weight:700 }
+  .pill.sib{ background:rgba(229,115,94,.13); color:var(--coral); border-color:rgba(229,115,94,.3) }
+
+  .langrow{ display:none; align-items:center; gap:10px; margin-top:16px }
+  .langrow.show{ display:flex }
+  .langrow .lbl{ color:var(--dim); font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase }
+  .seg{ display:inline-flex; background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:999px; padding:3px }
+  .seg button{ appearance:none; cursor:pointer; border:0; background:transparent; color:var(--dim);
+    font-weight:800; font-size:13px; padding:5px 15px; border-radius:999px; transition:background .15s,color .15s }
+  .seg button.on{ background:var(--teal); color:#04121a }
+
+  .cta{ display:inline-flex; align-items:center; gap:9px; margin-top:20px; text-decoration:none;
+    background:var(--teal); color:#04121a; font-weight:800; font-size:15.5px;
+    padding:13px 22px; border-radius:12px; transition:transform .15s, box-shadow .15s, background .15s;
+    box-shadow:0 12px 30px rgba(46,196,182,.22) }
+  .cta:hover{ transform:translateY(-2px); box-shadow:0 16px 40px rgba(46,196,182,.32) }
+  .cta.reel{ background:var(--coral); box-shadow:0 12px 30px rgba(229,115,94,.24) }
+  .cta.reel:hover{ box-shadow:0 16px 40px rgba(229,115,94,.34) }
+
+  footer{ max-width:1080px; margin:clamp(34px,6vw,56px) auto 0; color:var(--dim); font-size:12.5px;
+    text-align:center; border-top:1px solid var(--line); padding-top:18px; line-height:1.6 }
+  footer b{ color:var(--ink) }
+
+  /* ---- entradilla (brand sting) ---- */
+  .entradilla{ width:min(560px,86vw); border-radius:22px; overflow:hidden; background:#04101b;
+    border:1px solid var(--line); box-shadow:0 30px 90px rgba(0,0,0,.5), 0 0 40px rgba(46,196,182,.10);
+    margin-bottom:6px }
+  .intro{ display:block; width:100%; height:auto; aspect-ratio:16/9; object-fit:cover; background:#04101b }
+  .intro .mark{ width:60%; height:auto }
+  @media (prefers-reduced-motion:reduce){
+    .intro{ background:url(assets/brand-intro-poster.jpg) center/cover }
+  }
+
+  /* ---- resumen ---- */
+  .resumen{ max-width:880px; margin:0 auto clamp(30px,5vw,52px); text-align:center;
+    padding-bottom:clamp(28px,5vw,46px); border-bottom:1px solid var(--line) }
+  .rtitle{ font-size:clamp(24px,5vw,40px); line-height:1.05; font-weight:800; letter-spacing:-.015em }
+  .rtitle b{ color:var(--teal) }
+  .rlede{ color:var(--dim); font-size:clamp(14px,2.3vw,17px); margin:14px auto 0; max-width:62ch }
+  .rlede b{ color:var(--ink); font-weight:700 }
+  .rgrid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:clamp(20px,3.4vw,30px) auto 0; text-align:left }
+  .rcard{ display:block; text-decoration:none; color:var(--ink);
+    background:linear-gradient(180deg,rgba(15,34,51,.7),rgba(11,28,43,.7));
+    border:1px solid var(--line); border-radius:16px; padding:18px 20px;
+    transition:border-color .16s, transform .16s }
+  .rcard:hover{ transform:translateY(-2px); border-color:rgba(46,196,182,.45) }
+  .rnum{ color:var(--teal); font-weight:800; font-size:11px; letter-spacing:.14em }
+  .rcard b{ display:block; font-size:17px; margin:7px 0 6px; letter-spacing:-.01em }
+  .rdesc{ display:block; color:var(--dim); font-size:13.5px; line-height:1.5 }
+  .rdesc i{ color:var(--cream); font-style:italic }
+  .rmodes{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px 12px; margin-top:22px }
+  .rmodes span{ color:var(--dim); font-size:13px; font-weight:700;
+    background:rgba(255,255,255,.03); border:1px solid var(--line); border-radius:999px; padding:6px 14px }
+
+  /* ---- responsive ---- */
+  @media (max-width:720px){
+    .stagewrap{ grid-template-columns:1fr; gap:18px }
+    .info{ text-align:center }
+    .meta,.langrow.show{ justify-content:center }
+    .frame img{ max-height:46vh }
+  }
+  @media (max-width:560px){
+    .rgrid{ grid-template-columns:1fr }
+  }
+  @media (max-width:430px){
+    .chooser{ grid-template-columns:repeat(2,1fr) }
+    .chooser.cols3{ grid-template-columns:repeat(3,1fr) }
+  }
+  @media (prefers-reduced-motion:reduce){ *{ transition:none !important } }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="masthead">
+      <div class="entradilla">
+        <video class="intro" autoplay muted loop playsinline preload="metadata"
+               poster="assets/brand-intro-poster.jpg" aria-label="Soulbeats">
+          <source src="assets/brand-intro.mp4" type="video/mp4">
+          <img class="mark" src="assets/soulbeats-mark.svg" alt="Soulbeats">
+        </video>
+      </div>
+      <h1 class="vh">Soulbeats</h1>
+      <div class="tagline">story decks <b>con alma</b></div>
+    </header>
+
+    <!-- ═══════════ RESUMEN · la entrada de todo ═══════════ -->
+    <section class="resumen">
+      <div class="eyebrow">El resumen</div>
+      <h2 class="rtitle">Dos historias. <b>Cuatro formas</b> de vivirlas.</h2>
+      <p class="rlede">Cada historia Soulbeats — narrador on-model, componentes y animación generados por el
+        sistema — se puede <b>leer</b> como deck, <b>pasar</b> en el móvil, <b>mirar</b> como reel o
+        <b>hacer</b> como test. Elige el formato; el alma es la misma.</p>
+      <div class="rgrid">
+        <a class="rcard" href="#historia-01">
+          <span class="rnum">HISTORIA · 01</span>
+          <b>La ontología como puente</b>
+          <span class="rdesc">Estrategia ↔ operación: del <i>system of record</i> al <i>system of action</i>. La palanca baja como acción, la señal sube como registro.</span>
+        </a>
+        <a class="rcard" href="#historia-02">
+          <span class="rnum">HISTORIA · 02</span>
+          <b>La escalera de la IA</b>
+          <span class="rdesc">Seis niveles, de «pregúntale» a «que el sistema se valide solo». Subir convierte la velocidad en infraestructura fiable.</span>
+        </a>
+      </div>
+      <div class="rmodes">
+        <span>🖥️ Deck · leer</span><span>📱 Móvil · swipe</span><span>🎬 Reel · mirar</span><span>🧪 Test · ¿qué fase?</span>
+      </div>
+    </section>
+
+    <!-- ═══════════ HISTORIA 01 · la ontología como puente ═══════════ -->
+    <section class="story" id="historia-01">
+      <div class="hero">
+        <div class="eyebrow">Historia · 01</div>
+        <h2>La ontología como <b>puente</b>.</h2>
+        <p class="lede">La estrategia muere en registros que no actúan. La ontología convierte tu
+          <i>system of record</i> en <i>system of action</i>: la palanca baja como acción, la señal sube como
+          registro, el bucle cierra. Elige cómo quieres vivir la historia.</p>
+      </div>
+
+      <section class="hub" data-story="ontologia" aria-label="Elige cómo consumir la historia de la ontología">
+        <div class="chooser" role="tablist" aria-label="Modo de consumo">
+          <button class="mode is-active" data-mode="deck"  role="tab" aria-selected="true">
+            <span class="ic">🖥️</span><span class="lb">Deck</span><span class="sub">leer</span></button>
+          <button class="mode" data-mode="movil" role="tab" aria-selected="false">
+            <span class="ic">📱</span><span class="lb">Móvil</span><span class="sub">swipe</span></button>
+          <button class="mode" data-mode="reel"  role="tab" aria-selected="false">
+            <span class="ic">🎬</span><span class="lb">Reel</span><span class="sub">mirar</span></button>
+          <button class="mode" data-mode="test"  role="tab" aria-selected="false">
+            <span class="ic">🧪</span><span class="lb">Test</span><span class="sub">¿qué fase?</span></button>
+        </div>
+
+        <div class="stagewrap">
+          <div class="framewrap">
+            <a class="frame" href="./ontologia-puente/">
+              <img class="stageImg" src="assets/cover-deck.png" alt="Portada del deck">
+              <span class="badge">16:9</span>
+              <span class="play" hidden><span></span></span>
+            </a>
+          </div>
+          <div class="info">
+            <div class="kicker">Deck · leer · 16:9</div>
+            <h3 class="title">Léelo con las flechas</h3>
+            <p class="desc">Una sola pantalla, un narrador on-model, y en cada beat una revelación que aterriza el punto. Navega con ← →.</p>
+            <div class="meta"></div>
+            <div class="langrow show">
+              <span class="lbl">Idioma</span>
+              <div class="seg" role="group" aria-label="Idioma del deck">
+                <button class="on" data-lang="es">ES</button>
+                <button data-lang="en">EN</button>
+              </div>
+            </div>
+            <a class="cta" href="./ontologia-puente/">Abrir el deck →</a>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ═══════════ HISTORIA 02 · la escalera de la IA ═══════════ -->
+    <section class="story" id="historia-02">
+      <div class="hero">
+        <div class="eyebrow">Historia · 02</div>
+        <h2>¿En qué <b>nivel</b> usas la IA?</h2>
+        <p class="lede">Todos usamos IA: abres el chat y preguntas. Pero hay <b>seis niveles</b> — de
+          «pregúntale» a «que el sistema se valide solo». Subir de responder a que el sistema valide
+          convierte la velocidad en infraestructura fiable. Elige cómo quieres vivir la historia.</p>
+      </div>
+
+      <section class="hub" data-story="seisfases" aria-label="Elige cómo consumir la historia de la escalera de la IA">
+        <div class="chooser" role="tablist" aria-label="Modo de consumo">
+          <button class="mode is-active" data-mode="deck"  role="tab" aria-selected="true">
+            <span class="ic">🖥️</span><span class="lb">Deck</span><span class="sub">leer</span></button>
+          <button class="mode" data-mode="movil" role="tab" aria-selected="false">
+            <span class="ic">📱</span><span class="lb">Móvil</span><span class="sub">swipe</span></button>
+          <button class="mode" data-mode="reel"  role="tab" aria-selected="false">
+            <span class="ic">🎬</span><span class="lb">Reel</span><span class="sub">mirar</span></button>
+          <button class="mode" data-mode="test"  role="tab" aria-selected="false">
+            <span class="ic">🧪</span><span class="lb">Test</span><span class="sub">¿qué nivel?</span></button>
+        </div>
+
+        <div class="stagewrap">
+          <div class="framewrap">
+            <a class="frame" href="./seis-fases/">
+              <img class="stageImg" src="assets/cover-seis-deck.png" alt="Portada del deck">
+              <span class="badge">16:9</span>
+              <span class="play" hidden><span></span></span>
+            </a>
+          </div>
+          <div class="info">
+            <div class="kicker">Deck · leer · 16:9</div>
+            <h3 class="title">Léelo con las flechas</h3>
+            <p class="desc">La escalera Ask → Industrialize, un narrador on-model, y en cada beat una revelación que aterriza el punto. Navega con ← →.</p>
+            <div class="meta"></div>
+            <div class="langrow">
+              <span class="lbl">Idioma</span>
+              <div class="seg" role="group" aria-label="Idioma del deck">
+                <button class="on" data-lang="es">ES</button>
+              </div>
+            </div>
+            <a class="cta" href="./seis-fases/">Abrir el deck →</a>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <footer>
+      Construido de punta a punta con <b>Soulbeats</b> — narrador, componentes, animación y vídeo generados por el
+      sistema, con el alma intacta. Cada deck pasa un gate de geometría y colisiones (PASS 10/10) antes de publicarse.
+    </footer>
+  </div>
+
+<script>
+(function(){
+  var STORIES = {
+    ontologia: {
+      deck: {
+        kicker:'Deck · leer · 16:9', title:'Léelo con las flechas',
+        desc:'Una sola pantalla, un narrador on-model, y en cada beat una revelación que aterriza el punto. Navega con ← →.',
+        badge:'16:9', img:'assets/cover-deck.png', href:'./ontologia-puente/', cta:'Abrir el deck →',
+        meta:['20 slides','~7 min','teclado ← →'], lang:true, video:false, coral:false,
+        imgEn:'assets/cover-deck-en.png', hrefEn:'./ontologia-puente-en/'
+      },
+      movil: {
+        kicker:'Móvil · swipe · 9:16', title:'Pásalo con el pulgar',
+        desc:'El mismo relato en vertical, pensado para el móvil. Desliza para avanzar, beat a beat, como una historia.',
+        badge:'9:16', img:'assets/cover-portrait.png', href:'./ontologia-puente-portrait/', cta:'Abrir en móvil →',
+        meta:['20 slides','vertical','swipe'], lang:false, video:false, coral:false
+      },
+      reel: {
+        kicker:'Reel · mirar · vídeo', title:'Míralo como un reel',
+        desc:'La historia en vídeo, con intro y cierre montados. Sin tocar nada: dale al play y déjate llevar.',
+        badge:'▶ vídeo', img:'assets/cover-reel.png', href:'./reel/', cta:'Ver el reel →',
+        meta:['~2 min','1080×1920','con sonido'], lang:false, video:true, coral:true
+      },
+      test: {
+        kicker:'Test · interactivo · pieza hermana', title:'¿En qué fase de IA estás?',
+        desc:'Una pieza hermana de Soulbeats: un test interactivo que te sitúa. Responde con chips y descubre tu fase.',
+        badge:'🧪 test', img:'assets/cover-test.png', href:'./que-fase-eres/', cta:'Hacer el test →',
+        meta:['interactivo','portrait','pieza hermana'], lang:false, video:false, coral:false, sibling:true
+      }
+    },
+    seisfases: {
+      deck: {
+        kicker:'Deck · leer · 16:9', title:'Léelo con las flechas',
+        desc:'La escalera Ask → Industrialize, un narrador on-model, y en cada beat una revelación que aterriza el punto. Navega con ← →.',
+        badge:'16:9', img:'assets/cover-seis-deck.png', href:'./seis-fases/', cta:'Abrir el deck →',
+        meta:['21 slides','~6 min','teclado ← →'], lang:false, video:false, coral:false
+      },
+      movil: {
+        kicker:'Móvil · swipe · 9:16', title:'Pásalo con el pulgar',
+        desc:'La misma escalera en vertical, pensada para el móvil. Desliza para subir un peldaño en cada beat.',
+        badge:'9:16', img:'assets/cover-seis-portrait.png', href:'./seis-fases-portrait/', cta:'Abrir en móvil →',
+        meta:['21 slides','vertical','swipe'], lang:false, video:false, coral:false
+      },
+      reel: {
+        kicker:'Reel · mirar · vídeo', title:'Míralo como un reel',
+        desc:'La escalera de la IA en vídeo narrado — voz, subtítulos y cámara, con intro y cierre. Dale al play.',
+        badge:'▶ vídeo', img:'assets/cover-seis-reel.png', href:'./seis-fases/reel/', cta:'Ver el reel →',
+        meta:['~80 s','1080×1920','narrado'], lang:false, video:true, coral:true
+      },
+      test: {
+        kicker:'Test · interactivo · pieza hermana', title:'¿En qué nivel de IA estás?',
+        desc:'El gemelo interactivo de esta historia: responde con chips y descubre en qué nivel de la escalera estás.',
+        badge:'🧪 test', img:'assets/cover-test.png', href:'./que-fase-eres/', cta:'Hacer el test →',
+        meta:['interactivo','portrait','pieza hermana'], lang:false, video:false, coral:false, sibling:true
+      }
+    }
+  };
+
+  document.querySelectorAll('.hub').forEach(function(hub){
+    var MODES = STORIES[hub.dataset.story];
+    if(!MODES) return;
+    var state = { mode:'deck', lang:'es' };
+    var q = function(sel){ return hub.querySelector(sel); };
+
+    function render(){
+      var m = MODES[state.mode];
+      q('.kicker').textContent = m.kicker;
+      q('.title').textContent  = m.title;
+      q('.desc').textContent   = m.desc;
+      q('.badge').textContent  = m.badge;
+      var useEn = (m.lang && state.lang === 'en');
+      var img = useEn ? m.imgEn : m.img;
+      var href = useEn ? m.hrefEn : m.href;
+      q('.stageImg').src = img;
+      q('.stageImg').alt = m.title;
+      q('.frame').setAttribute('href', href);
+      var cta = q('.cta');
+      cta.setAttribute('href', href);
+      cta.textContent = m.cta;
+      cta.className = 'cta' + (m.coral ? ' reel' : '');
+      q('.play').hidden = !m.video;
+      var langrow = q('.langrow');
+      if(langrow) langrow.className = 'langrow' + (m.lang ? ' show' : '');
+      var meta = q('.meta'); meta.innerHTML = '';
+      m.meta.forEach(function(t,i){
+        var s = document.createElement('span');
+        s.className = 'pill' + (m.sibling && i===2 ? ' sib' : '');
+        s.textContent = t; meta.appendChild(s);
+      });
+      hub.querySelectorAll('.mode').forEach(function(b){
+        var on = b.dataset.mode === state.mode;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    }
+
+    hub.querySelectorAll('.mode').forEach(function(b){
+      b.addEventListener('click', function(){ state.mode = b.dataset.mode; render(); });
+    });
+    var langEs = q('[data-lang="es"]'), langEn = q('[data-lang="en"]');
+    if(langEs) langEs.addEventListener('click', function(){ state.lang='es'; langEs.classList.add('on'); if(langEn) langEn.classList.remove('on'); render(); });
+    if(langEn) langEn.addEventListener('click', function(){ state.lang='en'; langEn.classList.add('on'); if(langEs) langEs.classList.remove('on'); render(); });
+
+    render();
+  });
+})();
+</script>
+</body>
+</html>
