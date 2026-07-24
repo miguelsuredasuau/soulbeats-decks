@@ -1275,135 +1275,469 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;o
 [data-layer="chrome"]{--layer-z:500;z-index:var(--layer-z);}
 .reveal .slides section > *:not([data-layer]){--layer-z:200;z-index:var(--layer-z);}
 
-/* ---- foundry: boardpath (core/components/foundry/boardpath.ts) ---- */
-.fd-boardpath{position:absolute;box-sizing:border-box;}
-/* ---- la PISTA: el carril por el que se avanza (bajo las baldosas) ---- */
-.fd-boardpath .track,.fd-boardpath .jumps{position:absolute;left:0;top:0;display:block;overflow:visible;}
-.fd-boardpath .track .rail{fill:none;stroke:color-mix(in srgb,var(--line) 70%,transparent);
-  stroke-width:10;stroke-linecap:round;stroke-linejoin:round;}
-.fd-boardpath .track .railtop{fill:none;stroke:color-mix(in srgb,var(--accent) 30%,transparent);
-  stroke-width:3;stroke-linecap:round;stroke-linejoin:round;
-  stroke-dasharray:1 15;animation:fd-bp-flow 9s linear infinite;}
-/* ---- la BALDOSA: OBJETO con masa (cara de luz 135° + bisel inset + doble sombra) ---- */
-.fd-boardpath .sq{position:absolute;box-sizing:border-box;border-radius:var(--radius,14px);
-  --tone:var(--light);--fop:.10;
-  background:linear-gradient(135deg,color-mix(in srgb,#fff 12%,var(--bg)),
-    color-mix(in srgb,#000 22%,var(--bg)));
-  border:1px solid color-mix(in srgb,var(--light) 16%,transparent);
-  box-shadow:0 2px 0 color-mix(in srgb,#000 46%,var(--bg)),
-    0 6px 12px rgba(0,0,0,.28),0 16px 30px rgba(0,0,0,.30),
-    inset 0 1px 0 rgba(255,255,255,.16),inset 0 -3px 8px rgba(0,0,0,.28);}
-/* el velo de tinte por ROL (sale del DATO: el signo del salto), sutil sobre la cara */
-.fd-boardpath .sq::before{content:"";position:absolute;inset:0;border-radius:inherit;
-  background:linear-gradient(135deg,var(--tone),color-mix(in srgb,var(--tone) 55%,#000));
-  opacity:var(--fop);pointer-events:none;}
-/* el número de casilla: pequeño, en la esquina (jerarquía: manda el rótulo, no el número) */
-.fd-boardpath .sq .num{position:absolute;left:8px;top:6px;font-family:var(--head);
-  font-weight:700;font-size:12px;line-height:1;color:var(--dim);
-  font-variant-numeric:lining-nums;}
-/* la cara: emoji + rótulo centrados (el héroe escaneable de la casilla) */
-.fd-boardpath .sq .face{position:absolute;inset:0;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:3px;padding:14px 8px 8px;text-align:center;}
-.fd-boardpath .sq .em{font-size:20px;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,.45));}
-.fd-boardpath .sq .lbl{font-family:var(--body);font-weight:700;font-size:13px;line-height:1.12;
-  color:var(--light);text-shadow:0 1px 2px rgba(0,0,0,.5);
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-/* el badge del salto: el DATO (+N/−N) a la vista, tintado por el signo (esquina sup-der) */
-.fd-boardpath .sq .badge{position:absolute;right:7px;top:6px;display:inline-flex;align-items:center;
-  gap:2px;font-family:var(--body);font-weight:800;font-size:12px;line-height:1;
-  padding:3px 7px;border-radius:var(--pill,999px);color:var(--accent-ink);
-  font-variant-numeric:lining-nums;box-shadow:0 1px 3px rgba(0,0,0,.35);}
-.fd-boardpath .sq .badge .ba{width:0;height:0;border-left:4px solid transparent;
-  border-right:4px solid transparent;}
-.fd-boardpath .sq .badge.flag{font-size:14px;padding:2px 6px;color:var(--light);
-  background:color-mix(in srgb,var(--card-bg) 82%,transparent);box-shadow:none;}
-/* ROL bonus: avance — verde (--ok); el badge sube (▲) */
-.fd-boardpath .sq.r-bonus{--tone:var(--ok);--fop:.2;
-  border-color:color-mix(in srgb,var(--ok) 46%,transparent);}
-.fd-boardpath .sq.r-bonus .badge{background:color-mix(in srgb,var(--ok) 90%,#fff);}
-.fd-boardpath .sq.r-bonus .badge .ba{border-bottom:6px solid var(--accent-ink);}
-/* ROL penalty: retroceso — coral (--bad); el badge baja (▼) */
-.fd-boardpath .sq.r-penalty{--tone:var(--bad);--fop:.2;
-  border-color:color-mix(in srgb,var(--bad) 46%,transparent);}
-.fd-boardpath .sq.r-penalty .badge{background:color-mix(in srgb,var(--bad) 90%,#fff);}
-.fd-boardpath .sq.r-penalty .badge .ba{border-top:6px solid var(--accent-ink);}
-/* ROL start/finish: hitos del camino (crema neutra con más luz) */
-.fd-boardpath .sq.r-start,.fd-boardpath .sq.r-finish{--tone:var(--light);--fop:.14;}
-.fd-boardpath .sq.r-finish{border-color:color-mix(in srgb,var(--accent) 40%,transparent);}
-/* la casilla ACTUAL: aro teal que LATE + glow — el foco es físico, no un borde plano */
-.fd-boardpath .sq.is-cur{border-color:color-mix(in srgb,var(--accent) 62%,transparent);
-  box-shadow:0 2px 0 color-mix(in srgb,var(--accent) 44%,#000),
-    0 8px 16px rgba(0,0,0,.30),0 0 26px color-mix(in srgb,var(--accent) 30%,transparent),
-    inset 0 1px 0 rgba(255,255,255,.2);}
-.fd-boardpath .sq.is-cur::after{content:"";position:absolute;inset:-5px;border-radius:calc(var(--radius,14px) + 5px);
-  border:2px solid color-mix(in srgb,var(--accent) 60%,transparent);
-  box-shadow:0 0 22px color-mix(in srgb,var(--accent) 32%,transparent);
-  animation:fd-bp-pulse 2.6s ease-in-out infinite;pointer-events:none;}
-.fd-boardpath .sq.is-cur .lbl{color:color-mix(in srgb,var(--accent) 30%,var(--light));}
-/* la casilla ACTUAL cede el centro al PEÓN: su rótulo sube arriba y el emoji cede su sitio */
-.fd-boardpath .sq.is-cur .face{justify-content:flex-start;padding-top:26px;}
-.fd-boardpath .sq.is-cur .em{display:none;}
-/* ---- los ARCOS de salto: sobre las baldosas (de casilla a casilla) ---- */
-.fd-boardpath .jump .arc{fill:none;stroke-width:3;stroke-linecap:round;stroke-dasharray:7 6;}
-.fd-boardpath .jump.j-up .arc{stroke:color-mix(in srgb,var(--ok) 82%,var(--light));
-  animation:fd-bp-flow 7s linear infinite;}
-.fd-boardpath .jump.j-dn .arc{stroke:color-mix(in srgb,var(--bad) 82%,var(--light));
-  animation:fd-bp-flow 7s linear infinite reverse;}
-.fd-boardpath .jump.j-up .ah{fill:color-mix(in srgb,var(--ok) 88%,var(--light));}
-.fd-boardpath .jump.j-dn .ah{fill:color-mix(in srgb,var(--bad) 88%,var(--light));}
-.fd-boardpath .jump .arc,.fd-boardpath .jump .ah{filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));}
-/* ---- la FICHA (peón): disco radial + sombra de contacto elíptica + ambiente ---- */
-.fd-boardpath .token{position:absolute;width:var(--tk);height:var(--tk);
-  transform:translate(-50%,-50%);pointer-events:none;}
-.fd-boardpath .token .cast{position:absolute;left:50%;bottom:-16%;width:78%;height:26%;
-  transform:translateX(-50%);border-radius:50%;
-  background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,.5),rgba(0,0,0,0) 70%);
-  filter:blur(2px);animation:fd-bp-cast 3.2s ease-in-out infinite;}
-.fd-boardpath .token .pawn{position:absolute;inset:0;border-radius:50%;
-  background:radial-gradient(120% 120% at 32% 26%,color-mix(in srgb,#fff 70%,var(--accent)),
-    var(--accent) 44%,color-mix(in srgb,var(--accent) 62%,#000));
-  border:1px solid color-mix(in srgb,var(--accent) 70%,#fff);
-  box-shadow:0 3px 7px rgba(0,0,0,.45),0 0 18px color-mix(in srgb,var(--accent) 34%,transparent),
-    inset 0 2px 3px rgba(255,255,255,.5),inset 0 -3px 6px rgba(0,0,0,.34);
-  animation:fd-bp-bob 3.2s ease-in-out infinite;}
-.fd-boardpath .token .pawn::after{content:"";position:absolute;left:26%;top:20%;width:26%;height:20%;
-  border-radius:50%;background:rgba(255,255,255,.72);filter:blur(1px);}
-/* ---- coreografía por beats: baldosa POP → pista draw-in → arcos draw-in → ficha cae ---- */
-.fd-boardpath .sq.fragment{opacity:0;transform:scale(.8) translateY(8px);}
-.fd-boardpath .sq.fragment.visible{opacity:1;transform:none;
-  transition:opacity .3s ease,transform .42s cubic-bezier(.3,1.5,.5,1);}
-.fd-boardpath .jump.fragment{opacity:0;}
-.fd-boardpath .jump.fragment.visible{opacity:1;transition:opacity .4s ease;}
-/* la ficha CAE del cielo y aterriza con squash (la señal firma del «te toca mover») */
-.fd-boardpath .token{animation:fd-bp-drop .7s cubic-bezier(.3,1.2,.4,1) .1s both;}
-.fd-boardpath .track .rail{stroke-dasharray:100;stroke-dashoffset:100;
-  animation:fd-bp-draw .8s ease .15s forwards;}
-/* step_per:none — el MISMO orden en cascada CSS, UN reloj, sin beats */
-.fd-boardpath.sp-none .sq{opacity:0;
-  animation:fd-bp-pop .42s cubic-bezier(.3,1.5,.5,1) calc(var(--i,0)*.06s) both;}
-.fd-boardpath.sp-none .jump{opacity:0;animation:fd-bp-fade .4s ease .7s forwards;}
-@keyframes fd-bp-pop{from{opacity:0;transform:scale(.8) translateY(8px);}to{opacity:1;transform:none;}}
-@keyframes fd-bp-fade{to{opacity:1;}}
-@keyframes fd-bp-draw{to{stroke-dashoffset:0;}}
-@keyframes fd-bp-flow{to{stroke-dashoffset:-42;}}
-@keyframes fd-bp-pulse{0%,100%{opacity:.5;}50%{opacity:1;}}
-@keyframes fd-bp-bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
-@keyframes fd-bp-cast{0%,100%{transform:translateX(-50%) scaleX(1);opacity:.9;}
-  50%{transform:translateX(-50%) scaleX(.82);opacity:.6;}}
-@keyframes fd-bp-drop{0%{opacity:0;transform:translate(-50%,-50%) translateY(-90px) scale(.9);}
-  60%{opacity:1;transform:translate(-50%,-50%) translateY(0) scale(1);}
-  74%{transform:translate(-50%,-50%) translateY(0) scaleY(.8) scaleX(1.12);}
-  100%{opacity:1;transform:translate(-50%,-50%);}}
-/* reduced-motion: estado FINAL digno — tablero entero, ficha en su sitio, todo estático */
+/* ---- foundry: chatthread (core/components/foundry/chatthread.ts) ---- */
+.fd-chatthread{position:absolute;box-sizing:border-box;width:380px;font-family:var(--body);}
+.fd-chatthread *{box-sizing:border-box;}
+/* la pantalla: superficie con masa — sombra doble (ambiente+contacto) + rim */
+.fd-chatthread .scrn{position:relative;overflow:hidden;border-radius:var(--radius);
+  box-shadow:0 24px 52px rgba(0,0,0,.45),0 4px 12px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.22);}
+/* chasis in_device: los materiales de gd-phone (bezel #0b0b0b, aro #2a2a2a) */
+.fd-chatthread.dev{background:#0b0b0b;border-radius:46px;padding:11px 11px 7px;
+  box-shadow:var(--shadow),inset 0 0 0 2px #2a2a2a,inset 0 1px 0 rgba(255,255,255,.08);}
+.fd-chatthread.dev .scrn{border-radius:34px;box-shadow:0 0 0 1px rgba(0,0,0,.4);}
+/* cámara punch-hole centrada en el status bar (el bezel moderno, no el notch 2017) */
+.fd-chatthread.dev .scrn::before{content:"";position:absolute;top:7px;left:50%;
+  transform:translateX(-50%);width:11px;height:11px;border-radius:50%;background:#0b0b0b;
+  box-shadow:inset 0 0 0 2.5px #1c1e22,inset 0 0 3px 1px rgba(90,130,170,.55);}
+.fd-chatthread .homebar{width:38%;height:4px;margin:7px auto 1px;border-radius:var(--pill);
+  background:rgba(255,255,255,.32);}
+/* status bar (solo in_device) */
+.fd-chatthread .sbar{display:flex;align-items:center;justify-content:space-between;
+  padding:7px 18px 3px;font-size:11px;font-weight:800;letter-spacing:.02em;}
+.fd-chatthread .sbar .ic{display:inline-flex;gap:4px;align-items:center;}
+.fd-chatthread .sbar svg{height:9px;width:auto;fill:currentColor;display:block;}
+.fd-chatthread .sbar .bat{height:10px;}
+/* ---- header ---- */
+.fd-chatthread .hdr{display:flex;align-items:center;gap:9px;padding:9px 12px;}
+.fd-chatthread .back{display:flex;flex:none;}
+.fd-chatthread .back svg{width:9px;height:15px;}
+.fd-chatthread .ava{width:34px;height:34px;border-radius:50%;overflow:hidden;flex:none;
+  background:#DFE5E7;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.2);}
+.fd-chatthread .ava img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;}
+.fd-chatthread .ava.ini{display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:15px;font-weight:900;}
+.fd-chatthread .who{flex:1;min-width:0;line-height:1.18;}
+.fd-chatthread .nm{font-size:13.5px;font-weight:800;letter-spacing:.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fd-chatthread .st{font-size:10.5px;font-weight:600;opacity:.85;display:flex;align-items:center;gap:4px;}
+.fd-chatthread .st .dot{display:none;width:6px;height:6px;border-radius:50%;background:var(--ok);}
+.fd-chatthread .hact{display:inline-flex;gap:13px;align-items:center;margin-left:auto;flex:none;}
+.fd-chatthread .hact svg{height:14px;width:auto;fill:currentColor;opacity:.92;}
+/* ---- hilo ---- */
+.fd-chatthread .thread{display:flex;flex-direction:column;gap:9px;padding:12px;}
+.fd-chatthread .mrow{position:relative;display:flex;}
+.fd-chatthread .mrow.a{justify-content:flex-start;}
+.fd-chatthread .mrow.b{justify-content:flex-end;}
+.fd-chatthread .mrow.sys{justify-content:center;}
+.fd-chatthread .mrow.hasrx{margin-bottom:12px;}
+.fd-chatthread .mrow.hasdv{margin-bottom:13px;}
+.fd-chatthread .msg{position:relative;max-width:78%;padding:7px 10px 5px;
+  font-size:calc(14px*var(--ct-k,1));line-height:1.35;font-weight:600;}
+.fd-chatthread .txt b{font-weight:800;}
+.fd-chatthread .meta{display:flex;justify-content:flex-end;align-items:center;gap:3px;
+  margin-top:2px;font-size:10px;font-weight:600;opacity:.9;}
+.fd-chatthread .tick{width:15px;height:10px;flex:none;}
+.fd-chatthread .tick path{fill:none;stroke:currentColor;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round;}
+.fd-chatthread .dlv{position:absolute;right:2px;bottom:-15px;font-size:9.5px;
+  font-weight:700;color:#8E8E93;white-space:nowrap;}
+/* el mensaje CAE al llegar su beat (reveal transiciona .fragment) */
+.fd-chatthread .msg.fragment:not(.visible){transform:translateY(9px) scale(.97);}
+/* reactions: píldora que solapa el borde inferior de la burbuja */
+.fd-chatthread .reacts{position:absolute;bottom:-12px;display:flex;gap:4px;}
+.fd-chatthread .a .reacts{left:6px;}
+.fd-chatthread .b .reacts{right:6px;}
+.fd-chatthread .rx{display:inline-flex;align-items:center;gap:4px;font-size:14px;
+  font-weight:700;padding:2px 8px;border-radius:var(--pill);background:#fff;color:#54656F;
+  box-shadow:0 1px 2px rgba(0,0,0,.18),inset 0 0 0 1px rgba(0,0,0,.06);}
+.fd-chatthread .rx b{font-weight:800;font-size:10px;}
+/* typing: flota donde el mensaje va a aterrizar; current-visible en el beat N−1 */
+.fd-chatthread .typing{position:absolute;top:0;display:inline-flex;gap:4px;align-items:center;
+  padding:10px 12px;border-radius:2px 10px 10px 10px;background:#fff;
+  box-shadow:0 1px 1px rgba(0,0,0,.13);}
+.fd-chatthread .a .typing{left:0;}
+.fd-chatthread .b .typing{right:0;border-radius:10px 2px 10px 10px;}
+.fd-chatthread .typing i{width:6px;height:6px;border-radius:50%;background:#93A1AA;
+  animation:fd-ct-dot 1.15s ease-in-out infinite;}
+.fd-chatthread .typing i:nth-child(2){animation-delay:.14s;}
+.fd-chatthread .typing i:nth-child(3){animation-delay:.28s;}
+@keyframes fd-ct-dot{0%,55%,100%{transform:translateY(0);opacity:.4}
+  25%{transform:translateY(-3px);opacity:.95}}
+/* ---- composer + teclado ---- */
+.fd-chatthread .cmp{display:flex;align-items:center;gap:7px;padding:8px 10px;}
+.fd-chatthread .cemo{display:flex;flex:none;opacity:.6;}
+.fd-chatthread .cemo svg{width:17px;height:17px;fill:currentColor;}
+.fd-chatthread .cinp{flex:1;min-width:0;font-size:12.5px;font-weight:600;padding:8px 13px;
+  border-radius:var(--pill);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fd-chatthread .csend{display:flex;align-items:center;justify-content:center;flex:none;
+  width:32px;height:32px;border-radius:50%;
+  box-shadow:0 2px 5px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.35);}
+.fd-chatthread .csend svg{width:14px;height:14px;fill:currentColor;margin-left:2px;}
+/* teclas: CARA con gradiente + PARED (labio 2px, ~73% del valor de la cara) +
+   sombra sobre el chasis — proporciones del patrón gd-keys (medidas, no adivinadas) */
+.fd-chatthread .kb{padding:8px 6px 10px;display:flex;flex-direction:column;gap:5px;
+  background:#D3D7DC;box-shadow:inset 0 1px 0 rgba(255,255,255,.55);}
+.fd-chatthread .krow{display:flex;gap:4px;justify-content:center;}
+.fd-chatthread .ky{--lip:#A9ABAF;flex:1;max-width:34px;height:30px;display:flex;
+  align-items:center;justify-content:center;font-size:11.5px;font-weight:700;
+  border-radius:5px;color:#3C4043;background:linear-gradient(180deg,#FDFDFE 0%,#EBECEE 100%);
+  box-shadow:0 2px 0 var(--lip),0 3px 5px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.9);}
+.fd-chatthread .ky.wide{max-width:48px;flex:1.5;font-size:10px;}
+.fd-chatthread .ky.spc{max-width:none;flex:5;font-size:10px;letter-spacing:.08em;color:#70757A;}
+.fd-chatthread{--kgo:var(--accent);}
+.fd-chatthread .ky.go{--lip:color-mix(in srgb,var(--kgo) 55%,#000);color:#fff;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--kgo) 86%,#fff) 0%,var(--kgo) 100%);}
+/* ============ skin: whatsapp (colores del artefacto) ============ */
+.fd-chatthread.sk-whatsapp{--kgo:#00A884;}
+.fd-chatthread.sk-whatsapp .scrn{background:#ECE5DD;}
+.fd-chatthread.sk-whatsapp .sbar{background:#054C44;color:#fff;}
+.fd-chatthread.sk-whatsapp .hdr{background:#075E54;color:#fff;
+  box-shadow:0 1px 3px rgba(0,0,0,.22);}
+.fd-chatthread.sk-whatsapp .st{color:rgba(255,255,255,.78);}
+/* el fondo doodle del hilo: textura de puntos sutil, no PNG */
+.fd-chatthread.sk-whatsapp .thread{background-color:#ECE5DD;
+  background-image:radial-gradient(rgba(60,70,75,.07) 1px,transparent 1.4px);
+  background-size:14px 14px;}
+.fd-chatthread.sk-whatsapp .a .msg{background:#fff;color:#111B21;
+  border-radius:2px 10px 10px 10px;box-shadow:0 1px 1px rgba(0,0,0,.13);}
+.fd-chatthread.sk-whatsapp .b .msg{background:#D9FDD3;color:#111B21;
+  border-radius:10px 2px 10px 10px;box-shadow:0 1px 1px rgba(0,0,0,.13);}
+.fd-chatthread.sk-whatsapp .a .msg::before{content:"";position:absolute;top:0;left:-7px;
+  border-top:9px solid #fff;border-left:8px solid transparent;}
+.fd-chatthread.sk-whatsapp .b .msg::before{content:"";position:absolute;top:0;right:-7px;
+  border-top:9px solid #D9FDD3;border-right:8px solid transparent;}
+.fd-chatthread.sk-whatsapp .meta{color:#667781;}
+.fd-chatthread.sk-whatsapp .b .tick{color:#53BDEB;}   /* leído: doble check azul */
+.fd-chatthread.sk-whatsapp .sys .msg{background:#FDF3C6;color:#57534E;font-size:11px;
+  font-weight:700;padding:4px 12px;border-radius:8px;box-shadow:0 1px 1px rgba(0,0,0,.1);}
+.fd-chatthread.sk-whatsapp .cmp{background:#F0F2F5;color:#54656F;}
+.fd-chatthread.sk-whatsapp .cinp{background:#fff;color:#8696A0;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.04);}
+.fd-chatthread.sk-whatsapp .csend{background:#00A884;color:#fff;}
+/* ============ skin: imessage ============ */
+.fd-chatthread.sk-imessage{--kgo:#0A84FF;}
+.fd-chatthread.sk-imessage .scrn{background:#fff;}
+.fd-chatthread.sk-imessage .sbar{background:#F5F5F7;color:#000;}
+.fd-chatthread.sk-imessage .hdr{background:rgba(246,246,247,.96);color:#000;
+  border-bottom:1px solid #D8D8DC;padding:7px 12px 6px;}
+.fd-chatthread.sk-imessage .back,.fd-chatthread.sk-imessage .hact{color:#0A84FF;}
+.fd-chatthread.sk-imessage .hmid{flex:1;min-width:0;display:flex;flex-direction:column;
+  align-items:center;gap:2px;}
+.fd-chatthread.sk-imessage .hmid .ava{width:36px;height:36px;background:#E4E4E8;}
+.fd-chatthread.sk-imessage .nm{font-size:10.5px;font-weight:600;}
+.fd-chatthread.sk-imessage .chv{color:#B0B0B6;margin-left:2px;}
+.fd-chatthread.sk-imessage .a .msg{background:#E9E9EB;color:#111;
+  border-radius:16px 16px 16px 5px;}
+.fd-chatthread.sk-imessage .b .msg{color:#fff;border-radius:16px 16px 5px 16px;
+  background:linear-gradient(180deg,#3D9BFF 0%,#0A84FF 100%);}
+.fd-chatthread.sk-imessage .a .meta{color:#8E8E93;}
+.fd-chatthread.sk-imessage .b .meta{color:rgba(255,255,255,.75);}
+.fd-chatthread.sk-imessage .sys .msg{background:none;box-shadow:none;color:#8E8E93;
+  font-size:10.5px;font-weight:700;padding:0;}
+.fd-chatthread.sk-imessage .typing{background:#E9E9EB;border-radius:16px 16px 16px 5px;}
+.fd-chatthread.sk-imessage .typing i{background:#8E8E93;}
+.fd-chatthread.sk-imessage .cmp{background:#fff;border-top:1px solid #E8E8EA;color:#8E8E93;}
+.fd-chatthread.sk-imessage .cinp{background:#fff;color:#C0C0C6;
+  box-shadow:inset 0 0 0 1px #C6C6C8;}
+.fd-chatthread.sk-imessage .csend{background:#0A84FF;color:#fff;}
+/* ============ skin: slack (el hilo de equipo; desktop, sin burbujas) ============ */
+.fd-chatthread.sk-slack .scrn{background:#fff;}
+.fd-chatthread.sk-slack .sbar{background:#fff;color:#1D1C1D;}
+.fd-chatthread.sk-slack .hdr{background:#fff;color:#1D1C1D;border-bottom:1px solid #E8E8E8;
+  padding:10px 14px;gap:8px;}
+.fd-chatthread.sk-slack .chn{font-size:14px;font-weight:900;flex:none;
+  max-width:42%;overflow-wrap:anywhere;}
+.fd-chatthread.sk-slack .star{color:#616061;font-size:12px;flex:none;}
+.fd-chatthread.sk-slack .topic{flex:1;min-width:0;font-size:11px;font-weight:600;color:#616061;
+  overflow-wrap:anywhere;line-height:1.25;border-left:1px solid #DDD;padding-left:8px;}
+.fd-chatthread.sk-slack .hact{color:#616061;}
+.fd-chatthread.sk-slack .thread{gap:13px;padding:12px 14px;}
+.fd-chatthread.sk-slack .mrow.b{justify-content:flex-start;}
+.fd-chatthread.sk-slack .msg{max-width:100%;display:flex;gap:9px;padding:0;background:none;}
+.fd-chatthread.sk-slack .sava{width:30px;height:30px;border-radius:7px;overflow:hidden;
+  flex:none;background:#DDD;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);}
+.fd-chatthread.sk-slack .sava img{width:100%;height:100%;object-fit:cover;
+  object-position:top;display:block;}
+.fd-chatthread.sk-slack .sava.ini{display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:14px;font-weight:900;}
+.fd-chatthread.sk-slack .scol{flex:1;min-width:0;}
+.fd-chatthread.sk-slack .shead{display:flex;align-items:baseline;gap:7px;}
+.fd-chatthread.sk-slack .snm{font-size:13px;font-weight:900;color:#1D1C1D;}
+.fd-chatthread.sk-slack .stm{font-size:10px;font-weight:600;color:#616061;}
+.fd-chatthread.sk-slack .txt{color:#1D1C1D;font-size:calc(13.5px*var(--ct-k,1));line-height:1.42;
+  font-weight:500;margin-top:1px;}
+.fd-chatthread.sk-slack .reacts{position:static;display:flex;gap:5px;margin-top:6px;}
+.fd-chatthread.sk-slack .rx{background:#F4F4F4;color:#1D1C1D;box-shadow:none;
+  border:1px solid #E0E0E0;}
+.fd-chatthread.sk-slack .thr{display:flex;gap:7px;align-items:baseline;margin-top:5px;
+  font-size:11.5px;}
+.fd-chatthread.sk-slack .thr b{color:#1264A3;font-weight:800;}
+.fd-chatthread.sk-slack .thr span{color:#616061;font-weight:600;}
+.fd-chatthread.sk-slack .mrow.sys{align-items:center;gap:8px;}
+.fd-chatthread.sk-slack .mrow.sys::before,.fd-chatthread.sk-slack .mrow.sys::after{
+  content:"";flex:1;height:1px;background:#E8E8E8;}
+.fd-chatthread.sk-slack .sys .msg{display:block;background:#fff;border:1px solid #E0E0E0;
+  color:#616061;font-size:10.5px;font-weight:800;padding:3px 12px;border-radius:var(--pill);}
+.fd-chatthread.sk-slack .typing{position:absolute;left:39px;background:#fff;
+  border:1px solid #E0E0E0;border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,.08);}
+.fd-chatthread.sk-slack .typing i{background:#B5B5B3;}
+.fd-chatthread.sk-slack .cmp{background:#fff;padding:2px 12px 12px;}
+.fd-chatthread.sk-slack .cbox{flex:1;min-width:0;border:1px solid #C9C9C9;border-radius:9px;
+  overflow:hidden;background:#fff;}
+.fd-chatthread.sk-slack .ctools{display:flex;gap:12px;align-items:center;padding:5px 10px;
+  background:#F8F8F8;color:#616061;font-size:10.5px;font-weight:700;border-bottom:1px solid #EEE;}
+.fd-chatthread.sk-slack .crow{display:flex;align-items:center;gap:8px;padding:4px 6px 4px 0;}
+.fd-chatthread.sk-slack .cinp{border-radius:0;background:none;color:#8D8D8D;
+  box-shadow:none;padding:6px 10px;}
+.fd-chatthread.sk-slack .csend{width:26px;height:26px;border-radius:6px;
+  background:#007A5A;color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.fd-chatthread.sk-slack .csend svg{width:12px;height:12px;}
+/* ============ skin: generic — 100% tokens, vive bajo las 6 pieles ============ */
+.fd-chatthread.sk-generic .scrn{background:color-mix(in srgb,var(--bg) 84%,#fff);
+  box-shadow:0 24px 52px rgba(0,0,0,.45),0 4px 12px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px var(--card-bd);}
+.fd-chatthread.sk-generic .sbar{background:rgba(255,255,255,.06);color:var(--ink);}
+.fd-chatthread.sk-generic .hdr{background:rgba(255,255,255,.06);color:var(--ink);
+  border-bottom:1px solid var(--card-bd);}
+.fd-chatthread.sk-generic .ava{background:rgba(255,255,255,.14);}
+.fd-chatthread.sk-generic .st{color:var(--dim);}
+.fd-chatthread.sk-generic .st .dot{display:inline-block;}
+.fd-chatthread.sk-generic .a .msg{background:rgba(255,255,255,.09);color:var(--light);
+  border-radius:4px 14px 14px 14px;box-shadow:inset 0 0 0 1px var(--card-bd),
+    0 2px 6px rgba(0,0,0,.2);}
+.fd-chatthread.sk-generic .b .msg{color:var(--ink);border-radius:14px 4px 14px 14px;
+  background:color-mix(in srgb,var(--accent) 24%,transparent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 45%,transparent),
+    0 2px 6px rgba(0,0,0,.2);}
+.fd-chatthread.sk-generic .meta{color:var(--dim);}
+.fd-chatthread.sk-generic .b .tick{color:var(--accent);}
+.fd-chatthread.sk-generic .sys .msg{background:var(--card-bg);color:var(--dim);
+  font-size:11px;font-weight:700;padding:3px 12px;border-radius:var(--pill);
+  box-shadow:inset 0 0 0 1px var(--card-bd);}
+.fd-chatthread.sk-generic .typing{background:rgba(255,255,255,.09);
+  box-shadow:inset 0 0 0 1px var(--card-bd);border-radius:4px 14px 14px 14px;}
+.fd-chatthread.sk-generic .typing i{background:var(--dim);}
+.fd-chatthread.sk-generic .rx{background:var(--card-bg);color:var(--light);
+  box-shadow:inset 0 0 0 1px var(--card-bd);}
+.fd-chatthread.sk-generic .thr b{color:var(--accent);}
+.fd-chatthread.sk-generic .thr span{color:var(--dim);}
+.fd-chatthread.sk-generic .cmp{background:rgba(255,255,255,.04);color:var(--dim);
+  border-top:1px solid var(--card-bd);}
+.fd-chatthread.sk-generic .cinp{background:var(--card-bg);color:var(--dim);
+  box-shadow:inset 0 0 0 1px var(--card-bd);}
+.fd-chatthread.sk-generic .csend{background:var(--accent);color:var(--accent-ink);}
+.fd-chatthread.sk-generic .kb{background:linear-gradient(180deg,rgba(203,209,213,.5) 0%,
+  rgba(168,175,181,.42) 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),
+  inset 0 -1px 0 rgba(0,0,0,.1);}
+.fd-chatthread.sk-generic .ky.go{color:var(--accent-ink);}
+/* reduced-motion: estado final legible, nada a medias */
 @media (prefers-reduced-motion: reduce){
-  .fd-boardpath .sq,.fd-boardpath .jump,.fd-boardpath .token,
-  .fd-boardpath .token .pawn,.fd-boardpath .token .cast,
-  .fd-boardpath .track .rail,.fd-boardpath .track .railtop,.fd-boardpath .jump .arc{
-    animation:none;transition:none;opacity:1;}
-  .fd-boardpath .sq{transform:none;}
-  .fd-boardpath .token{transform:translate(-50%,-50%);}
-  .fd-boardpath .track .rail{stroke-dashoffset:0;stroke-dasharray:none;}
-  .fd-boardpath .sq.is-cur::after{animation:none;opacity:1;}
+  .fd-chatthread .typing i{animation:none;opacity:.55;}
+  .fd-chatthread .msg.fragment:not(.visible){transform:none;}
+}
+
+/* ---- foundry: cyclediagram (core/components/foundry/cyclediagram.ts) ---- */
+.fd-cyclediagram{position:absolute;box-sizing:border-box;}
+.fd-cyclediagram .ring{position:absolute;left:0;top:0;display:block;overflow:visible;}
+/* arcos: tinta suave derivada del skin; la flecha de VUELTA (.close) es el accent */
+.fd-cyclediagram .seg{color:color-mix(in srgb,var(--light) 46%,transparent);}
+.fd-cyclediagram .seg path{fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;}
+.fd-cyclediagram .seg polygon{fill:currentColor;}
+.fd-cyclediagram .seg.close{color:var(--accent);
+  filter:drop-shadow(0 0 7px color-mix(in srgb,var(--accent) 45%,transparent));}
+.fd-cyclediagram .seg.close path{stroke-width:3.5;}
+/* nodo: ancla 0×0 en el círculo; coin y caption se cuelgan de ella */
+.fd-cyclediagram .node{position:absolute;width:0;height:0;}
+.fd-cyclediagram .coin{position:absolute;left:-40px;top:-40px;width:80px;height:80px;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(120% 120% at 30% 22%,rgba(255,255,255,.17),rgba(255,255,255,0) 52%),
+    linear-gradient(180deg,color-mix(in srgb,#fff 9%,var(--bg)),color-mix(in srgb,#000 12%,var(--bg)));
+  border:1px solid var(--card-bd);
+  box-shadow:0 4px 0 color-mix(in srgb,#000 42%,var(--bg)),
+    0 8px 16px rgba(0,0,0,.30),0 20px 38px rgba(0,0,0,.34),
+    inset 0 2px 0 rgba(255,255,255,.16),inset 0 -4px 8px rgba(0,0,0,.26);}
+.fd-cyclediagram .coin .face{font-size:34px;line-height:1;transform:translateY(-1px);}
+.fd-cyclediagram .coin .face.num{font-family:var(--head);font-weight:600;font-size:30px;
+  color:var(--light);font-variant-numeric:lining-nums;transform:none;}
+.fd-cyclediagram .coin .ord{position:absolute;right:-4px;bottom:-2px;width:26px;height:26px;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:var(--body);font-weight:800;font-size:14px;color:var(--dim);
+  background:color-mix(in srgb,#000 18%,var(--bg));border:1px solid var(--card-bd);
+  box-shadow:0 3px 6px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.12);}
+/* nodo acento: el aro del argumento (color + aro + glow, nunca solo color) */
+.fd-cyclediagram .node.acc .coin{border-color:color-mix(in srgb,var(--accent) 65%,transparent);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 80%,transparent),
+    0 4px 0 color-mix(in srgb,#000 42%,var(--bg)),
+    0 8px 16px rgba(0,0,0,.30),0 20px 38px rgba(0,0,0,.34),
+    0 0 26px color-mix(in srgb,var(--accent) 30%,transparent),
+    inset 0 2px 0 rgba(255,255,255,.16),inset 0 -4px 8px rgba(0,0,0,.26);}
+.fd-cyclediagram .node.acc .ord{background:var(--accent);color:var(--accent-ink);
+  border-color:transparent;}
+.fd-cyclediagram .node.acc .cap .lbl{color:var(--accent);}
+/* captions radiales: label la voz UI, note la secundaria */
+.fd-cyclediagram .cap{position:absolute;width:max-content;max-width:172px;}
+.fd-cyclediagram .cap .lbl{font-family:var(--body);font-weight:800;font-size:16px;
+  line-height:1.15;letter-spacing:.02em;color:var(--light);}
+.fd-cyclediagram .cap .note{font-family:var(--body);font-weight:600;font-size:14px;
+  line-height:1.25;color:var(--dim);margin-top:3px;}
+.fd-cyclediagram .cap--r{left:54px;top:0;transform:translateY(-50%);text-align:left;}
+.fd-cyclediagram .cap--l{right:54px;top:0;transform:translateY(-50%);text-align:right;}
+.fd-cyclediagram .cap--t{bottom:54px;left:0;transform:translateX(-50%);text-align:center;}
+.fd-cyclediagram .cap--b{top:54px;left:0;transform:translateX(-50%);text-align:center;}
+/* hub central: disco con masa (bisel + doble sombra), el porqué del ciclo */
+.fd-cyclediagram .hub{position:absolute;border-radius:50%;box-sizing:border-box;
+  display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;
+  background:radial-gradient(115% 115% at 32% 24%,rgba(255,255,255,.13),rgba(255,255,255,0) 55%),
+    linear-gradient(180deg,color-mix(in srgb,#fff 6%,var(--bg)),color-mix(in srgb,#000 14%,var(--bg)));
+  border:1px solid var(--card-bd);
+  box-shadow:0 14px 30px rgba(0,0,0,.4),0 3px 8px rgba(0,0,0,.24),
+    inset 0 2px 0 rgba(255,255,255,.13),inset 0 -6px 14px rgba(0,0,0,.3);}
+.fd-cyclediagram .hub .hlbl{font-family:var(--body);font-weight:800;font-size:14px;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--light);line-height:1.3;}
+/* error de spec VISIBLE en la slide (precedente venn): nunca una caja vacía callada */
+.fd-cyclediagram .err{font-family:var(--body);font-weight:700;font-size:16px;color:var(--bad);
+  background:var(--card-bg);border:1px dashed var(--bad);border-radius:var(--radius);
+  padding:14px 18px;}
+/* flywheel: llanta exterior + brillo cónico en el eje + flechas del accent más gruesas */
+.fd-cyclediagram--fly .hub{
+  background:conic-gradient(from 210deg,rgba(255,255,255,.10),rgba(255,255,255,0) 28%,
+    rgba(255,255,255,.05) 52%,rgba(255,255,255,0) 78%,rgba(255,255,255,.10)),
+    linear-gradient(180deg,color-mix(in srgb,#fff 7%,var(--bg)),color-mix(in srgb,#000 16%,var(--bg)));}
+.fd-cyclediagram--fly .hub::after{content:"";position:absolute;inset:-9px;border-radius:50%;
+  border:2px solid color-mix(in srgb,var(--accent) 38%,transparent);}
+.fd-cyclediagram--fly .seg{color:color-mix(in srgb,var(--accent) 80%,transparent);}
+.fd-cyclediagram--fly .seg path{stroke-width:4;}
+/* la flecha de VUELTA manda TAMBIÉN en flywheel: 4.5 > 4 — la jerarquía del argumento
+   nunca se invierte (misma especificidad 0,3,1 que la regla base .close; ésta va después) */
+.fd-cyclediagram--fly .seg.close path{stroke-width:4.5;}
+/* spin: el momentum fluye por las flechas en el sentido del giro — UN reloj para todas.
+   on_reveal DE VERDAD (patrón venn): el flujo nace pausado dentro de su .fragment y
+   arranca con el .visible de reveal.js — cada flecha empieza a fluir AL llegar su beat */
+.fd-cyclediagram--spin .seg path{stroke-dasharray:1 13;animation:fd-cyc-flow 1.4s linear infinite;}
+.fd-cyclediagram--spin .seg.fragment path{animation-play-state:paused;}
+.fd-cyclediagram--spin .seg.fragment.visible path{animation-play-state:running;}
+@keyframes fd-cyc-flow{to{stroke-dashoffset:-14;}}
+@media (prefers-reduced-motion: reduce){
+  .fd-cyclediagram--spin .seg path{animation:none;stroke-dasharray:none;}
+}
+/* ============================================================================
+   kind:"circuit" — el racetrack horizontal con write-back. TODO scopeado bajo
+   .fd-cyclediagram--circuit (child classes propias: station/badge/track/tok… — no
+   pisan ni las pisa el ciclo radial). El leg viaja en --wbl-fwd (acción) /
+   --wbl-back (señal): identidad por DATO. CERO z-index: el orden del DOM apila.
+   ============================================================================ */
+.fd-cyclediagram--circuit{font-family:var(--body);--wbl-fwd:var(--bad);--wbl-back:var(--accent);}
+.fd-cyclediagram--circuit .track{position:absolute;left:0;top:0;display:block;overflow:visible;}
+/* riel de IDA (acción): coral atenuado, fino y calmo — el flujo secundario */
+.fd-cyclediagram--circuit .fwd{color:color-mix(in srgb,var(--wbl-fwd) 60%,transparent);}
+.fd-cyclediagram--circuit .fwd .rail{fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;}
+.fd-cyclediagram--circuit .fwd .ah{fill:currentColor;}
+/* tubería de VUELTA (write-back): teal SÓLIDO, gruesa, con glow — el HÉROE del circuito */
+.fd-cyclediagram--circuit .back{color:var(--wbl-back);}
+.fd-cyclediagram--circuit .back .pipe{fill:none;stroke:currentColor;stroke-width:5;
+  stroke-linecap:round;stroke-linejoin:round;
+  filter:drop-shadow(0 0 8px color-mix(in srgb,var(--wbl-back) 45%,transparent));}
+.fd-cyclediagram--circuit .back .ah{fill:currentColor;
+  filter:drop-shadow(0 0 5px color-mix(in srgb,var(--wbl-back) 50%,transparent));}
+/* los TOKENS: pucks que ruedan por la path (offset-path). La firma ambiente del circuito */
+.fd-cyclediagram--circuit .tok{position:absolute;left:0;top:0;border-radius:50%;
+  offset-anchor:50% 50%;offset-rotate:0deg;offset-distance:0%;
+  animation-name:fd-cyc-run;animation-timing-function:linear;animation-iteration-count:infinite;}
+.fd-cyclediagram--circuit .tok.fwd{width:9px;height:9px;background:var(--wbl-fwd);
+  box-shadow:0 0 8px 1px color-mix(in srgb,var(--wbl-fwd) 70%,transparent);}
+.fd-cyclediagram--circuit .tok.back{width:11px;height:11px;background:var(--wbl-back);
+  box-shadow:0 0 11px 2px color-mix(in srgb,var(--wbl-back) 78%,transparent),0 0 3px #fff;}
+@keyframes fd-cyc-run{from{offset-distance:0%;}to{offset-distance:100%;}}
+/* la estación: OBJETO de cristal con masa (cara con luz radial, bisel, doble sombra) */
+.fd-cyclediagram--circuit .station{position:absolute;box-sizing:border-box;display:flex;
+  align-items:center;gap:11px;padding:0 15px;border-radius:14px;
+  background:radial-gradient(120% 130% at 24% 18%,rgba(255,255,255,.16),rgba(255,255,255,0) 55%),
+    linear-gradient(180deg,color-mix(in srgb,#fff 8%,var(--bg)),color-mix(in srgb,#000 18%,var(--bg)));
+  border:1px solid var(--card-bd);
+  box-shadow:0 5px 0 color-mix(in srgb,#000 44%,var(--bg)),
+    0 10px 20px rgba(0,0,0,.32),0 20px 38px rgba(0,0,0,.30),
+    inset 0 1px 0 rgba(255,255,255,.20),inset 0 -3px 8px rgba(0,0,0,.26);}
+.fd-cyclediagram--circuit .station .badge{flex:none;width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1;
+  background:radial-gradient(120% 120% at 30% 22%,rgba(255,255,255,.18),rgba(255,255,255,0) 55%),
+    color-mix(in srgb,#000 20%,var(--bg));border:1px solid var(--card-bd);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 2px 5px rgba(0,0,0,.3);}
+.fd-cyclediagram--circuit .station .txt{display:flex;flex-direction:column;flex:1;min-width:0;}
+.fd-cyclediagram--circuit .station .slbl{font-family:var(--body);font-weight:800;font-size:16px;
+  letter-spacing:.01em;color:var(--light);white-space:nowrap;line-height:1.12;
+  text-shadow:0 1px 2px rgba(0,0,0,.45);}
+.fd-cyclediagram--circuit .station .ssub{font-family:var(--body);font-weight:600;font-size:11.5px;
+  color:var(--dim);white-space:nowrap;line-height:1.2;margin-top:2px;}
+/* el HUB (transformador): teal sólido con aro + glow (el color sale del DATO accent) */
+.fd-cyclediagram--circuit .station.acc{border-color:color-mix(in srgb,var(--wbl-back) 60%,transparent);
+  background:radial-gradient(120% 130% at 24% 18%,rgba(255,255,255,.2),rgba(255,255,255,0) 55%),
+    linear-gradient(180deg,color-mix(in srgb,var(--wbl-back) 84%,#fff),
+      var(--wbl-back) 46%,color-mix(in srgb,var(--wbl-back) 78%,#000));
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--wbl-back) 34%,transparent),
+    0 5px 0 color-mix(in srgb,var(--wbl-back) 46%,#000),
+    0 12px 24px rgba(0,0,0,.32),0 0 30px color-mix(in srgb,var(--wbl-back) 30%,transparent),
+    inset 0 1px 0 rgba(255,255,255,.28);}
+.fd-cyclediagram--circuit .station.acc .badge{border-color:color-mix(in srgb,#fff 30%,transparent);
+  background:radial-gradient(120% 120% at 30% 22%,rgba(255,255,255,.24),rgba(255,255,255,0) 55%),
+    color-mix(in srgb,#000 14%,var(--wbl-back));}
+.fd-cyclediagram--circuit .station.acc .slbl{color:var(--accent-ink);text-shadow:none;}
+.fd-cyclediagram--circuit .station.acc .ssub{color:color-mix(in srgb,var(--accent-ink) 78%,transparent);}
+/* la marca que LATE en la fuente: aquí aterriza el write-back (record⇄action) */
+.fd-cyclediagram--circuit .cmark{position:absolute;width:14px;height:14px;border-radius:50%;
+  transform:translate(-50%,-50%);background:var(--wbl-back);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--wbl-back) 30%,transparent),0 2px 6px rgba(0,0,0,.4);}
+.fd-cyclediagram--circuit .cmark::after{content:"";position:absolute;inset:-5px;border-radius:inherit;
+  pointer-events:none;box-shadow:0 0 0 2px color-mix(in srgb,var(--wbl-back) 60%,transparent);
+  animation:fd-cyc-cpulse 2.6s cubic-bezier(.4,0,.2,1) infinite;}
+@keyframes fd-cyc-cpulse{0%{transform:scale(1);opacity:.85;}62%,100%{transform:scale(2);opacity:0;}}
+/* rótulo de IDA: pastilla fantasma coral (leg secundaria, calma) */
+.fd-cyclediagram--circuit .flabel{position:absolute;transform:translate(-50%,-50%);white-space:nowrap;
+  display:inline-flex;align-items:center;gap:6px;padding:3px 11px;border-radius:999px;
+  font-family:var(--body);font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase;
+  color:color-mix(in srgb,var(--wbl-fwd) 90%,var(--light));
+  background:color-mix(in srgb,var(--bg) 82%,transparent);
+  box-shadow:0 1px 4px rgba(0,0,0,.35),inset 0 0 0 1px color-mix(in srgb,var(--wbl-fwd) 30%,transparent);}
+.fd-cyclediagram--circuit .flabel .dir{font-weight:900;}
+/* rótulo WRITE-BACK: pastilla teal sólida con glow — el HÉROE (leg dominante) */
+.fd-cyclediagram--circuit .blabel{position:absolute;transform:translate(-50%,-50%);white-space:nowrap;
+  display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:999px;
+  font-family:var(--body);font-weight:800;font-size:15px;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--accent-ink);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--wbl-back) 90%,#fff),var(--wbl-back));
+  box-shadow:0 6px 16px rgba(0,0,0,.3),0 0 22px color-mix(in srgb,var(--wbl-back) 34%,transparent),
+    inset 0 1px 0 rgba(255,255,255,.3);}
+.fd-cyclediagram--circuit .blabel .dir{font-weight:900;font-size:17px;}
+/* el ensamblado por beats: estaciones entran (pop), riel de ida entra, y el WRITE-BACK se
+   DIBUJA (draw-in del trazo) en el último beat — «acción → señal de vuelta», causa-efecto */
+.fd-cyclediagram--circuit .station.fragment{opacity:0;transform:translateY(8px) scale(.96);}
+.fd-cyclediagram--circuit .station.fragment.visible{opacity:1;transform:none;
+  transition:opacity .3s ease,transform .4s cubic-bezier(.3,1.5,.5,1);}
+.fd-cyclediagram--circuit .fwd.fragment,.fd-cyclediagram--circuit .tok.fragment,
+.fd-cyclediagram--circuit .flabel.fragment,.fd-cyclediagram--circuit .cmark.fragment{opacity:0;}
+.fd-cyclediagram--circuit .fwd.fragment.visible,.fd-cyclediagram--circuit .tok.fragment.visible,
+.fd-cyclediagram--circuit .flabel.fragment.visible{opacity:1;transition:opacity .35s ease;}
+.fd-cyclediagram--circuit .cmark.fragment.visible{opacity:1;transition:opacity .3s ease .5s;}
+.fd-cyclediagram--circuit .back.fragment .pipe{stroke-dasharray:100;stroke-dashoffset:100;}
+.fd-cyclediagram--circuit .back.fragment.visible .pipe{stroke-dashoffset:0;
+  transition:stroke-dashoffset .6s ease;}
+.fd-cyclediagram--circuit .back.fragment .ah{opacity:0;}
+.fd-cyclediagram--circuit .back.fragment.visible .ah{opacity:1;transition:opacity .25s ease .45s;}
+.fd-cyclediagram--circuit .blabel.fragment{opacity:0;transform:translate(-50%,-50%) translateY(6px);}
+.fd-cyclediagram--circuit .blabel.fragment.visible{opacity:1;transform:translate(-50%,-50%);
+  transition:opacity .35s ease .3s,transform .35s ease .3s;}
+/* step_per:none — el MISMO ensamblado en cascada CSS, UN reloj, sin beats */
+.fd-cyclediagram--circuit.sp-none .station{opacity:0;
+  animation:fd-cyc-cpop .4s cubic-bezier(.3,1.5,.5,1) calc(var(--i,0)*.1s) both;}
+.fd-cyclediagram--circuit.sp-none .back .pipe{stroke-dasharray:100;stroke-dashoffset:100;
+  animation:fd-cyc-cdraw .6s ease .5s forwards;}
+.fd-cyclediagram--circuit.sp-none .back .ah{opacity:0;animation:fd-cyc-cfade .25s ease 1s forwards;}
+@keyframes fd-cyc-cpop{to{opacity:1;}}
+@keyframes fd-cyc-cdraw{to{stroke-dashoffset:0;}}
+@keyframes fd-cyc-cfade{to{opacity:1;}}
+/* spin_hint:"none" — el circuito entero dibujado pero los tokens aparcados (sin circulación) */
+.fd-cyclediagram--circuit.no-flow .tok{animation:none;offset-distance:0%;}
+.fd-cyclediagram--circuit.no-flow .tok.back{opacity:0;}
+.fd-cyclediagram--circuit.no-flow .cmark::after{animation:none;opacity:0;}
+/* reduced-motion: circuito ENTERO dibujado, token aparcado en la fuente, cero flujo */
+@media (prefers-reduced-motion: reduce){
+  .fd-cyclediagram--circuit .tok{animation:none;offset-distance:0%;}
+  .fd-cyclediagram--circuit .tok.back{opacity:0;}
+  .fd-cyclediagram--circuit .cmark::after{animation:none;opacity:0;}
+  .fd-cyclediagram--circuit .station{transition:none;animation:none;}
+  .fd-cyclediagram--circuit.sp-none .station{opacity:1;animation:none;}
+  .fd-cyclediagram--circuit .back .pipe{stroke-dasharray:none;stroke-dashoffset:0;animation:none;}
+  .fd-cyclediagram--circuit .back.fragment .pipe{stroke-dashoffset:0;}
+  .fd-cyclediagram--circuit .back .ah{opacity:1;animation:none;}
 }
 
 /* ---- foundry: dartboard (core/components/foundry/dartboard.ts) ---- */
